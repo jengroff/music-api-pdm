@@ -1,4 +1,4 @@
-# everyton-api
+# music-api
 
 API for the everyton music service. 
 Built in Python. 
