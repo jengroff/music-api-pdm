@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.routes import ping, playlists, songs, artists, spotify
+from project.app.routes import ping, playlists, songs, artists, spotify
 import logging
-from app.db import init_db
+from project.app.db import init_db
 
 
 log = logging.getLogger("uvicorn")
