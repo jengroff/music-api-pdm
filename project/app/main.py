@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from project.app.routes import ping, playlists, songs, artists, spotify
+from app.routes import ping, playlists, songs, artists, spotify
 import logging
-from project.app.db import init_db
+from app.db import init_db
 
 
 log = logging.getLogger("uvicorn")
@@ -13,8 +13,6 @@ The create_application() function loads each of the endpoint "groups"
 own module inside the "routes" directory. 
 
 """
-
-
 
 def create_application() -> FastAPI:
     application = FastAPI(title="Everyton Music API Documentation",

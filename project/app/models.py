@@ -42,15 +42,15 @@ class Songs(Model):
     """
     This references a song and all its attributes as stored in the database
     """
-    spid = fields.TextField(pk=True)
-    name = fields.TextField()
-    artist = fields.TextField(null=True)
-    oridur = fields.TextField(null=True)
-    imark = fields.TextField(null=True)
-    omark = fields.TextField(null=True)
-    revidur = fields.TextField(null=True)
-    uri = fields.TextField(null=True)
-    url = fields.TextField(null=True)
+    spid = fields.CharField(pk=True)
+    name = fields.CharField()
+    artist = fields.CharField(null=True)
+    oridur = fields.CharField(null=True)
+    imark = fields.CharField(null=True)
+    omark = fields.CharField(null=True)
+    revidur = fields.CharField(null=True)
+    uri = fields.CharField(null=True)
+    url = fields.CharField(null=True)
     tempo: fields.IntField(null=True)
     energy: fields.IntField(null=True)
     danceability: fields.IntField(null=True)
@@ -84,7 +84,7 @@ Song_Pydantic = pydantic_model_creator(Songs)
 
 class Playlists(Model):
     id = fields.IntField(pk=True)
-    name = fields.TextField()
+    name = fields.CharField()
     songs = StrArrayField(null=True)
     spm_min = fields.IntField(null=True)
     spm_max = fields.IntField(null=True)
@@ -105,10 +105,10 @@ Playlist_Pydantic = pydantic_model_creator(Playlists, name="Playlist")
 
 class Artists(Model):
     id = fields.IntField(pk=True)
-    name = fields.TextField()
-    spid = fields.TextField()
-    uri = fields.TextField(null=True)
-    url = fields.TextField(null=True)
+    name = fields.CharField()
+    spid = fields.CharField()
+    uri = fields.CharField(null=True)
+    url = fields.CharField(null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
