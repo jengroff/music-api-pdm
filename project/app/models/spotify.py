@@ -1,5 +1,6 @@
-import os
+from collections import namedtuple
 from dataclasses import dataclass
+import os
 from typing import Optional
 
 import spotipy
@@ -16,6 +17,14 @@ account = os.getenv("SPOTIFY_ACCOUNT")
 scope = os.getenv("SPOTIFY_SCOPE")
 
 
+# TODO: change design to have Spotify class that generates Song objects
+# you basically split the behavior from the data
+# Spotify.create_playlist(list[Song])
+# Spotify is kind of the manager of Song, Playlist, etc. objects
+Song = namedtuple("Song", ("spid track artist tempo energy "
+                           "danceability uri url"))
+
+
 @dataclass
 class SpotifySong:
     """Represents the Spotify song data we want to store.
@@ -29,6 +38,7 @@ class SpotifySong:
         danceability: Spotify-assigned acoustic feature 'danceability'.
         uri: Spotify's uniform resource identifier.
         url: Spotify-assigned url for the track.
+        sp: spotipy.Spotify auth object
     """
     artist: str
     name: str
@@ -37,17 +47,21 @@ class SpotifySong:
     danceability = Optional[int]
     uri = Optional[str]
     url = Optional[str]
+    sp = Optional[spotipy.Spotify]
 
-    def spotify_auth(self):
+    def __post_init__(self):
+        self.sp = self._spotify_auth()
+        self._make_song()
+
+    def _spotify_auth(self):
         auth_manager = SpotifyOAuth(account, scope, redirect_uri=redirect)
         sp = spotipy.Spotify(auth_manager=auth_manager)
         client_credentials_manager = SpotifyClientCredentials(client_id=client, client_secret=secret)
         sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
         return sp
 
-    def get_features(self, spid: str):
-        sp = self.spotify_auth()
-        res = sp.audio_features(spid)
+    def _get_features(self, spid: str):
+        res = self.sp.audio_features(spid)
         fparsed = res[0]
         energy = fparsed['energy']
         danceability = fparsed['danceability']
@@ -60,9 +74,11 @@ class SpotifySong:
         }
         return features_dict
 
-    def make_song(self, artist: str, name: str):
-        sp = self.spotify_auth()
-        result = sp.search(f"{artist}+{name}", limit=1, market="US")
+    def _make_song(self):
+        result = self.sp.search(f"{self.artist}+{self.name}", limit=1, market="US")
+        if not result['tracks']['items']:
+            return
+
         parsed = result['tracks']['items'][0]
         uri = parsed['uri']
         spid = parsed['id']
@@ -77,6 +93,13 @@ class SpotifySong:
             "uri": uri,
             "url": url
         }
-        features = self.get_features(spid)
+        features = self._get_features(spid)
         song_dict.update(features)
+        from pprint import pprint as pp
+        pp(song_dict)
         return song_dict
+
+
+if __name__ == "__main__":
+    # python -m project.app.models.spotify
+    ss = SpotifySong("U2", "bad")
