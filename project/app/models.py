@@ -1,18 +1,12 @@
+from tortoise import fields
+from tortoise.models import Model
+from tortoise.contrib.pydantic import pydantic_model_creator
 from pydantic import BaseModel
 from typing import Optional, List, Union, Type, Any
 import json
 from tortoise.fields.base import Field
-from tortoise import fields
-from tortoise.models import Model
-from tortoise.contrib.pydantic import pydantic_model_creator, pydantic_queryset_creator
 
 
-"""
-This module defines the Tortoise and Pydantic classes used for all endpoints.
-For each Tortoise class definition, a Pydantic equivalent is generated 
-using the pydantic_model_creator function. 
-
-"""
 
 class StrArrayField(Field, list):
     """
@@ -38,6 +32,32 @@ class Status(BaseModel):
     message: str
 
 
+
+class Artists(Model):
+    id = fields.IntField(pk=True, auto_now_add=True)
+    name = fields.CharField(max_length=255)
+    spid = fields.CharField(max_length=255)
+    uri = fields.CharField(null=True, max_length=255)
+    url = fields.CharField(null=True, max_length=255)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+
+Artist_Pydantic = pydantic_model_creator(Artists)
+
+
+class Playlists(Model):
+    id = fields.IntField(pk=True, auto_now_add=True)
+    name = fields.CharField(max_length=255)
+    songs = StrArrayField(null=True)
+    spm_min = fields.IntField(null=True)
+    spm_max = fields.IntField(null=True)
+    spm_avg = fields.IntField(null=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+
+Playlist_Pydantic = pydantic_model_creator(Playlists, name="Playlist")
+
+
 class Songs(Model):
     """
     This references a song and all its attributes as stored in the database
@@ -59,64 +79,4 @@ class Songs(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
-class SongInsertSchema(BaseModel):
-    """
-    This references the user-defined attributes of a song
-    """
-    spid: str
-    name: str
-    artist: Optional[str] = None
-    oridur: Optional[str] = None
-    imark: Optional[str] = None
-    omark: Optional[str] = None
-    revidur: Optional[str] = None
-    uri: Optional[str] = None
-    url: Optional[str] = None
-    sp_tempo: Optional[int] = None
-    sp_energy: Optional[int] = None
-    sp_danceability: Optional[int] = None
-    sp_popularity: Optional[int] = None
-    spm: Optional[int] = None
-
-
 Song_Pydantic = pydantic_model_creator(Songs)
-
-
-class Playlists(Model):
-    id = fields.IntField(pk=True)
-    name = fields.CharField(max_length=255)
-    songs = StrArrayField(null=True)
-    spm_min = fields.IntField(null=True)
-    spm_max = fields.IntField(null=True)
-    spm_avg = fields.IntField(null=True)
-    created_at = fields.DatetimeField(auto_now_add=True)
-
-
-class PlaylistInsertSchema(BaseModel):
-    name: str
-    songs: Optional[List[str]]
-    spm_min: Optional[int] = None
-    spm_max: Optional[int] = None
-    spm_avg: Optional[int] = None
-
-
-Playlist_Pydantic = pydantic_model_creator(Playlists, name="Playlist")
-
-
-class Artists(Model):
-    id = fields.IntField(pk=True)
-    name = fields.CharField(max_length=255)
-    spid = fields.CharField(max_length=255)
-    uri = fields.CharField(null=True, max_length=255)
-    url = fields.CharField(null=True, max_length=255)
-    created_at = fields.DatetimeField(auto_now_add=True)
-
-
-class ArtistInsertSchema(BaseModel):
-    name: str
-    spid: str
-    uri: Optional[str] = None
-    url: Optional[str] = None
-
-
-Artist_Pydantic = pydantic_model_creator(Artists)

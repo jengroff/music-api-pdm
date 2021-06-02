@@ -1,10 +1,8 @@
-from fastapi import FastAPI
-from app.routes import ping, playlists, songs, artists, spotify
+from fastapi import FastAPI, Depends
+from app.routes import playlists, songs, artists, spotify, ping
 import logging
 from app.db import init_db
 
-
-log = logging.getLogger("uvicorn")
 
 """
 
@@ -14,15 +12,18 @@ own module inside the "routes" directory.
 
 """
 
+log = logging.getLogger("uvicorn")
+
 def create_application() -> FastAPI:
     application = FastAPI(title="Everyton Music API Documentation",
                           description="API for creating, updating, and retrieving Songs, Playlists, and Artists",
                           version="1.0.0")
-    application.include_router(ping.router, prefix="/ping", tags=["Application"])
+    application.include_router(ping.router, tags=["Application"])
     application.include_router(playlists.router, tags=["Playlists"])
     application.include_router(songs.router, tags=["Songs"])
     application.include_router(artists.router, tags=["Artists"])
     application.include_router(spotify.router, tags=["Spotify"])
+
     return application
 
 
