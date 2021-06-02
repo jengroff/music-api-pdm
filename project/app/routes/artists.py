@@ -1,8 +1,11 @@
 from typing import List
+
 from fastapi import APIRouter, HTTPException
+from tortoise.contrib.fastapi import HTTPNotFoundError
+
 from app.models import Artist_Pydantic, Artists, ArtistInsertSchema
 from app.models import Status
-from tortoise.contrib.fastapi import HTTPNotFoundError
+
 
 
 router = APIRouter()

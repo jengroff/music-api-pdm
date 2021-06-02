@@ -1,8 +1,9 @@
+from fastapi import APIRouter
 import spotipy
 import spotipy.util
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
+
 from app.utils.const import SPOTIFY_SECRET, SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI
-from fastapi import APIRouter
 
 
 router = APIRouter()

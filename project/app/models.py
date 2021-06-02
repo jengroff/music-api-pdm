@@ -1,11 +1,11 @@
+import json
+from typing import Optional, List, Union, Type, Any
+
 from tortoise import fields
 from tortoise.models import Model
 from tortoise.contrib.pydantic import pydantic_model_creator
-from pydantic import BaseModel
-from typing import Optional, List, Union, Type, Any
-import json
 from tortoise.fields.base import Field
-
+from pydantic import BaseModel
 
 
 class StrArrayField(Field, list):

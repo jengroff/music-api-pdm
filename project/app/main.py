@@ -1,6 +1,8 @@
-from fastapi import FastAPI, Depends
-from app.routes import playlists, songs, artists, spotify, ping
 import logging
+
+from fastapi import FastAPI
+
+from app.routes import playlists, songs, artists, spotify, ping
 from app.db import init_db
 
 
