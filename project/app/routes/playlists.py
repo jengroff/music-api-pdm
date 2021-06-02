@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
-from app.models import Playlist_Pydantic, Playlists
+from app.models import Playlist_Pydantic, Playlists, PlaylistInsertSchema
 from app.models import Status
 from tortoise.contrib.fastapi import HTTPNotFoundError
 
@@ -14,7 +14,7 @@ async def get_playlists():
 
 
 @router.post("/playlists", response_model=Playlist_Pydantic, status_code=201)
-async def create_playlist(playlist: Playlist_Pydantic):
+async def create_playlist(playlist: PlaylistInsertSchema):
     playlist_obj = await Playlists.create(**playlist.dict(exclude_unset=True))
     return await Playlist_Pydantic.from_tortoise_orm(playlist_obj)
 
@@ -25,7 +25,7 @@ async def get_playlist(id: int):
 
 
 @router.put("/playlists/{id}", response_model=Playlist_Pydantic, responses={404: {"model": HTTPNotFoundError}})
-async def update_playlist(id: int, playlist: Playlist_Pydantic):
+async def update_playlist(id: int, playlist: PlaylistInsertSchema):
     await Playlists.filter(id=id).update(**playlist.dict(exclude_unset=True))
     return await Playlist_Pydantic.from_queryset_single(Playlists.get(id=id))
 
