@@ -46,7 +46,8 @@ def get_track_acoustic_features(spid: str):
 
 @router.get("/spotify/song",
             summary="Retrieves summary Song data from Spotify",
-            description="Takes both Artist and Song name in query parameter and returns Spotify song data as a dictionary")
+            description="Takes both Artist and Song name in query parameter and returns Spotify song data as a "
+                        "dictionary")
 def get_song_data(artist: str, track: str):
     sp = spotify_auth()
     result = sp.search(f"{artist}+{track}", limit=1, market="US")

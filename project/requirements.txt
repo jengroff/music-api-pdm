@@ -19,3 +19,4 @@ python-multipart~=0.0.5
 tortoise-orm
 pytest
 gunicorn
+dotenv
