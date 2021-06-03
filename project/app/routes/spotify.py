@@ -1,21 +1,31 @@
+import os
+
+from fastapi import APIRouter
 import spotipy
 import spotipy.util
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
-from app.utils.const import SPOTIFY_SECRET, SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI
-from fastapi import APIRouter
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+redirect = os.getenv("SPOTIFY_REDIRECT_URI")
+client = os.getenv("SPOTIFY_CLIENT_ID")
+secret = os.getenv("SPOTIFY_SECRET")
+account = os.getenv("SPOTIFY_ACCOUNT")
 
 
 router = APIRouter()
 
 
 def spotify_auth():
-    auth_manager = SpotifyOAuth('joshengroff',
+    auth_manager = SpotifyOAuth(account,
                                 'playlist-read-collaborative',
-                                redirect_uri=SPOTIFY_REDIRECT_URI)
+                                redirect_uri=redirect)
 
     sp = spotipy.Spotify(auth_manager=auth_manager)
-    client_credentials_manager = SpotifyClientCredentials(client_id=SPOTIFY_CLIENT_ID,
-                                                          client_secret=SPOTIFY_SECRET)
+    client_credentials_manager = SpotifyClientCredentials(client_id=client,
+                                                          client_secret=secret)
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
     return sp
 
@@ -36,7 +46,8 @@ def get_track_acoustic_features(spid: str):
 
 @router.get("/spotify/song",
             summary="Retrieves summary Song data from Spotify",
-            description="Takes both Artist and Song name in query parameter and returns Spotify song data as a dictionary")
+            description="Takes both Artist and Song name in query parameter and returns Spotify song data as a "
+                        "dictionary")
 def get_song_data(artist: str, track: str):
     sp = spotify_auth()
     result = sp.search(f"{artist}+{track}", limit=1, market="US")

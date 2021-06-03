@@ -2,13 +2,11 @@ import json
 import pytest
 
 
-
 def test_create_playlist(test_app_with_db):
     response = test_app_with_db.post("/playlists/", data=json.dumps({"name": "the name"}))
 
     assert response.status_code == 201
     assert response.json()["name"] == "the name"
-
 
 
 def test_create_playlists_invalid_json(test_app):
