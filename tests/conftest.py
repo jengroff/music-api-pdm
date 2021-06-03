@@ -4,8 +4,8 @@ import pytest
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
-from app.main import create_application
-from app.config import get_settings, Settings
+from app.app import create_application
+from config.config import get_settings, Settings
 
 
 def get_settings_override():
