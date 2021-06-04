@@ -25,6 +25,32 @@ Song = namedtuple("Song", ("spid track artist tempo energy "
                            "danceability uri url"))
 
 
+def spotify_auth():
+    auth_manager = SpotifyOAuth(account,
+                                'playlist-read-collaborative',
+                                redirect_uri=redirect)
+
+    sp = spotipy.Spotify(auth_manager=auth_manager)
+    client_credentials_manager = SpotifyClientCredentials(client_id=client,
+                                                          client_secret=secret)
+    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+    return sp
+
+
+def get_track_acoustic_features(spid: str):
+    sp = spotify_auth()
+    response = sp.audio_features(spid)
+    energy = response[0]['energy']
+    danceability = response[0]['danceability']
+    tempo = response[0]['tempo']
+    features_dict = {
+        "spenergy": energy,
+        "spanceability": danceability,
+        "spempo": int(tempo)
+    }
+    return features_dict
+
+
 @dataclass
 class SpotifySong:
     """Represents the Spotify song data we want to store.
