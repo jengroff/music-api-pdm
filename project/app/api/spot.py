@@ -1,17 +1,19 @@
-import os
-
 from fastapi import APIRouter
+from pprint import pprint as pp
+
+from app.music.spotify import SpotifySong, SpotifySongResponse
+
 
 router = APIRouter()
 
 
-@router.get("/spotify/song",
+@router.get("/spotify/song", response_model=SpotifySong,
             summary="Retrieves summary Song data from Spotify",
             description="Takes both Artist and Song name in query parameter and returns Spotify song data as a "
                         "dictionary")
-def get_song_data(artist: str, track: str):
-    # TODO should call spotify method defined on the class
-    pass
+def get_song_data(artist: str, name: str):
+    song_object = SpotifySong(artist, name)
+    return song_object
 
 
 @router.get("/spotify/artist",

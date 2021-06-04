@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 from tortoise.contrib.fastapi import HTTPNotFoundError
 
-from database.models import Song_Pydantic, Songs, SongInsertSchema
-from database.models import Status
+from app.database.models import Song_Pydantic, Songs, SongInsertSchema
+from app.database.models import Status
 
 
 router = APIRouter()

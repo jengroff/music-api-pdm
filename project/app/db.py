@@ -6,16 +6,18 @@ from tortoise import Tortoise, run_async
 from tortoise.contrib.fastapi import register_tortoise
 from dotenv import load_dotenv
 
+
 log = logging.getLogger("uvicorn")
 
 load_dotenv()
+database_url = "DATABASE_URL"
 
 
-def init_db(app: FastAPI) -> None:
+async def init_db(app: FastAPI) -> None:
     register_tortoise(
         app,
-        db_url=os.getenv("DATABASE_URL"),
-        modules={"models": ["database.models"]},
+        db_url=os.getenv(database_url),
+        modules={"models": ["models"]},
         generate_schemas=True,
         add_exception_handlers=True,
     )
@@ -25,8 +27,8 @@ async def generate_schema() -> None:
     log.info("Initializing Tortoise...")
 
     await Tortoise.init(
-        db_url=os.getenv("DATABASE_URL"),
-        modules={'models': ['database.models']},
+        db_url=os.getenv(database_url),
+        modules={'models': ['models']},
     )
     log.info("Generating database schema via Tortoise...")
     await Tortoise.generate_schemas()

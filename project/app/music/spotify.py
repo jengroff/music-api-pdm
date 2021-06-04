@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import os
 from typing import Optional
 
+from pydantic import BaseModel
 import spotipy
 import spotipy.util
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -57,8 +58,8 @@ class SpotifySong:
 
     Attributes:
         spid: Spotify's unique ID for the song, as a string.
-        track: The human-readable song name, as a string.
-        artist: The human-readable artist name, as a string.
+        track: The human-readable song track, as a string.
+        artist: The human-readable artist track, as a string.
         tempo: Spotify-assigned acoustic feature 'tempo'.
         energy: Spotify-assigned acoustic feature 'energy'.
         danceability: Spotify-assigned acoustic feature 'danceability'.
@@ -73,7 +74,7 @@ class SpotifySong:
     danceability = Optional[int]
     uri = Optional[str]
     url = Optional[str]
-    sp = Optional[spotipy.Spotify]
+    sp = Optional[str]
 
     def __post_init__(self):
         self.sp = self._spotify_auth()
@@ -126,6 +127,12 @@ class SpotifySong:
         return song_dict
 
 
-if __name__ == "__main__":
-    # python -m project.app.models.spotify
-    ss = SpotifySong("U2", "bad")
+class SpotifySongResponse(BaseModel):
+    artist: str
+    name: str
+    tempo: Optional[int]
+    energy: Optional[int]
+    danceability: Optional[int]
+    uri: Optional[str]
+    url: Optional[str]
+    sp: Optional[str]
