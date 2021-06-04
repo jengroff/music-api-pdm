@@ -3,7 +3,6 @@ from dataclasses import dataclass
 import os
 from typing import Optional
 
-from pydantic import BaseModel
 import spotipy
 import spotipy.util
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -80,11 +79,18 @@ class SpotifySong:
         self.sp = self._spotify_auth()
         self._make_song()
 
+    def to_dict(self):
+        ret = self.__dict__
+        ret.pop("sp")  # internal thing + not serializable
+        return ret
+
     def _spotify_auth(self):
         auth_manager = SpotifyOAuth(account, scope, redirect_uri=redirect)
         sp = spotipy.Spotify(auth_manager=auth_manager)
-        client_credentials_manager = SpotifyClientCredentials(client_id=client, client_secret=secret)
-        sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+        client_credentials_manager = SpotifyClientCredentials(
+            client_id=client, client_secret=secret)
+        sp = spotipy.Spotify(
+            client_credentials_manager=client_credentials_manager)
         return sp
 
     def _get_features(self, spid: str):
@@ -102,37 +108,20 @@ class SpotifySong:
         return features_dict
 
     def _make_song(self):
-        result = self.sp.search(f"{self.artist}+{self.name}", limit=1, market="US")
+        result = self.sp.search(f"{self.artist}+{self.name}",
+                                limit=1, market="US")
         if not result['tracks']['items']:
             return
 
         parsed = result['tracks']['items'][0]
-        uri = parsed['uri']
+
+        self.name = parsed['name']
+        self.artist = parsed['artists'][0]['name']
+        self.uri = parsed['uri']
+        self.url = parsed['external_urls']['spotify']
+
         spid = parsed['id']
-        name = parsed['name']
-        artist = parsed['artists'][0]['name']
-        url = parsed['external_urls']['spotify']
-
-        song_dict = {
-            "spid": spid,
-            "name": name,
-            "artist": artist,
-            "uri": uri,
-            "url": url
-        }
-        features = self._get_features(spid)
-        song_dict.update(features)
-        from pprint import pprint as pp
-        pp(song_dict)
-        return song_dict
-
-
-class SpotifySongResponse(BaseModel):
-    artist: str
-    name: str
-    tempo: Optional[int]
-    energy: Optional[int]
-    danceability: Optional[int]
-    uri: Optional[str]
-    url: Optional[str]
-    sp: Optional[str]
+        features_dict = self._get_features(spid)
+        self.tempo = features_dict["tempo"]
+        self.energy = features_dict["energy"]
+        self.danceability = features_dict["danceability"]
