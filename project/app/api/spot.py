@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from app.music.spotify import SpotifySong
+from app.music.spotify import Spotify
 
 
 router = APIRouter()
@@ -14,7 +14,8 @@ router = APIRouter()
                 "Takes both Artist and Song name in query parameter "
                 "and returns Spotify song data as a dictionary"))
 def get_song_data(artist: str, name: str):
-    song = SpotifySong(artist, name).to_dict()
+    sp = Spotify()
+    song = sp.get_song(artist, name)._asdict()
     json_compatible_item_data = jsonable_encoder(song)
     return JSONResponse(content=json_compatible_item_data)
 
