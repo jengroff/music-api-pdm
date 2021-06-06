@@ -25,12 +25,12 @@ RUN apt-get update \
   && apt-get clean
 
 # install python dependencies
-COPY project/requirements.txt .
+COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 RUN pip install "uvicorn[standard]==0.13.4"
 
 # add app
-COPY project/app/music .
+COPY ./app/music .
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
