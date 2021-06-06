@@ -20,33 +20,21 @@ async def create_artist(artist: ArtistInsertSchema):
     return await Artist_Pydantic.from_tortoise_orm(artist_obj)
 
 
-@router.get(
-    "/artists/{id}",
-    response_model=Artist_Pydantic,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
+@router.get("/artists/{id}", response_model=Artist_Pydantic, status_code=200,
+            responses={404: {"model": HTTPNotFoundError}})
 async def get_artist(id: int):
     return await Artist_Pydantic.from_queryset_single(Artists.get(id=id))
 
 
-@router.put(
-    "/artists/{id}",
-    response_model=Artist_Pydantic,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
+@router.put("/artists/{id}", response_model=Artist_Pydantic, status_code=200,
+            responses={404: {"model": HTTPNotFoundError}})
 async def update_artist(id: int, artist: ArtistInsertSchema):
     await Artists.filter(id=id).update(**artist.dict(exclude_unset=True))
     return await Artist_Pydantic.from_queryset_single(Artists.get(id=id))
 
 
-@router.delete(
-    "/artists/{id}",
-    response_model=Status,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
+@router.delete("/artists/{id}", response_model=Status, status_code=200,
+               responses={404: {"model": HTTPNotFoundError}})
 async def delete_artist(id: int):
     deleted_count = await Artists.filter(id=id).delete()
     if not deleted_count:

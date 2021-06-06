@@ -3,9 +3,7 @@ import pytest
 
 
 def test_create_playlist(test_app_with_db):
-    response = test_app_with_db.post(
-        "/playlists/", data=json.dumps({"name": "the name"})
-    )
+    response = test_app_with_db.post("/playlists/", data=json.dumps({"name": "the name"}))
 
     assert response.status_code == 201
     assert response.json()["name"] == "the name"
@@ -19,16 +17,14 @@ def test_create_playlists_invalid_json(test_app):
             {
                 "loc": ["body", "name"],
                 "msg": "field required",
-                "type": "value_error.missing",
+                "type": "value_error.missing"
             }
         ]
     }
 
 
 def test_read_playlist(test_app_with_db):
-    response = test_app_with_db.post(
-        "/playlists/", data=json.dumps({"name": "the name"})
-    )
+    response = test_app_with_db.post("/playlists/", data=json.dumps({"name": "the name"}))
     playlist_id = response.json()["id"]
 
     response = test_app_with_db.get(f"/playlists/{playlist_id}/")
@@ -39,9 +35,7 @@ def test_read_playlist(test_app_with_db):
 
 
 def test_read_all_playlists(test_app_with_db):
-    response = test_app_with_db.post(
-        "/playlists/", data=json.dumps({"name": "the name"})
-    )
+    response = test_app_with_db.post("/playlists/", data=json.dumps({"name": "the name"}))
     playlist_id = response.json()["id"]
 
     response = test_app_with_db.get(f"/playlists/")

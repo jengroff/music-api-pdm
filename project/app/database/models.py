@@ -13,15 +13,12 @@ class StrArrayField(Field, list):
     String Array field specifically for PostgreSQL.
     This field can store list of str values.
     """
-
     SQL_TYPE = "text[]"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def to_db_value(
-        self, value: List[str], instance: "Union[Type[Model], Model]"
-    ) -> Optional[List[str]]:
+    def to_db_value(self, value: List[str], instance: "Union[Type[Model], Model]") -> Optional[List[str]]:
         return value
 
     def to_python_value(self, value: Any) -> Optional[List[str]]:
@@ -79,7 +76,6 @@ class Songs(Model):
     """
     This references a song and all its attributes as stored in the database
     """
-
     spid = fields.CharField(pk=True, max_length=255)
     name = fields.CharField(max_length=255)
     artist = fields.CharField(null=True, max_length=255)

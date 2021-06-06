@@ -21,33 +21,21 @@ async def create_song(song: SongInsertSchema):
     return await Song_Pydantic.from_tortoise_orm(song_obj)
 
 
-@router.get(
-    "/songs/{id}",
-    response_model=Song_Pydantic,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
+@router.get("/songs/{id}", response_model=Song_Pydantic, status_code=200,
+            responses={404: {"model": HTTPNotFoundError}})
 async def get_song(id: int):
     return await Song_Pydantic.from_queryset_single(Songs.get(id=id))
 
 
-@router.put(
-    "/songs/{id}",
-    response_model=Song_Pydantic,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
+@router.put("/songs/{id}", response_model=Song_Pydantic, status_code=200,
+            responses={404: {"model": HTTPNotFoundError}})
 async def update_song(id: int, song: SongInsertSchema):
     await Songs.filter(id=id).update(**song.dict(exclude_unset=True))
     return await Song_Pydantic.from_queryset_single(Songs.get(id=id))
 
 
-@router.delete(
-    "/songs/{id}",
-    response_model=Status,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
+@router.delete("/songs/{id}", response_model=Status, status_code=200,
+               responses={404: {"model": HTTPNotFoundError}})
 async def delete_song(id: int):
     deleted_count = await Songs.filter(id=id).delete()
     if not deleted_count:
