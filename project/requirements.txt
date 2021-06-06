@@ -17,6 +17,6 @@ uvicorn~=0.13.4
 idna~=2.10
 python-multipart~=0.0.5
 tortoise-orm
-pytest
+pytest==6.2.2
 gunicorn
 python-dotenv

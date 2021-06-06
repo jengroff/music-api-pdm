@@ -22,18 +22,18 @@ scope = os.getenv("SPOTIFY_SCOPE")
 # you basically split the behavior from the data
 # Spotify.create_playlist(list[Song])
 # Spotify is kind of the manager of Song, Playlist, etc. objects
-Song = namedtuple("Song", ("spid track artist tempo energy "
-                           "danceability uri url"))
+Song = namedtuple("Song", ("spid track artist tempo energy " "danceability uri url"))
 
 
 def spotify_auth():
-    auth_manager = SpotifyOAuth(account,
-                                'playlist-read-collaborative',
-                                redirect_uri=redirect)
+    auth_manager = SpotifyOAuth(
+        account, "playlist-read-collaborative", redirect_uri=redirect
+    )
 
     sp = spotipy.Spotify(auth_manager=auth_manager)
-    client_credentials_manager = SpotifyClientCredentials(client_id=client,
-                                                          client_secret=secret)
+    client_credentials_manager = SpotifyClientCredentials(
+        client_id=client, client_secret=secret
+    )
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
     return sp
 
@@ -41,13 +41,13 @@ def spotify_auth():
 def get_track_acoustic_features(spid: str):
     sp = spotify_auth()
     response = sp.audio_features(spid)
-    energy = response[0]['energy']
-    danceability = response[0]['danceability']
-    tempo = response[0]['tempo']
+    energy = response[0]["energy"]
+    danceability = response[0]["danceability"]
+    tempo = response[0]["tempo"]
     features_dict = {
         "spenergy": energy,
         "spanceability": danceability,
-        "spempo": int(tempo)
+        "spempo": int(tempo),
     }
     return features_dict
 
@@ -67,6 +67,7 @@ class SpotifySong:
         url: Spotify-assigned url for the track.
         sp: spotipy.Spotify auth object
     """
+
     artist: str
     name: str
     tempo = Optional[int]
@@ -83,46 +84,49 @@ class SpotifySong:
     def _spotify_auth(self):
         auth_manager = SpotifyOAuth(account, scope, redirect_uri=redirect)
         sp = spotipy.Spotify(auth_manager=auth_manager)
-        client_credentials_manager = SpotifyClientCredentials(client_id=client, client_secret=secret)
+        client_credentials_manager = SpotifyClientCredentials(
+            client_id=client, client_secret=secret
+        )
         sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
         return sp
 
     def _get_features(self, spid: str):
         res = self.sp.audio_features(spid)
         fparsed = res[0]
-        energy = fparsed['energy']
-        danceability = fparsed['danceability']
-        tempo = fparsed['tempo']
+        energy = fparsed["energy"]
+        danceability = fparsed["danceability"]
+        tempo = fparsed["tempo"]
 
         features_dict = {
             "energy": energy,
             "danceability": danceability,
-            "tempo": int(tempo)
+            "tempo": int(tempo),
         }
         return features_dict
 
     def _make_song(self):
         result = self.sp.search(f"{self.artist}+{self.name}", limit=1, market="US")
-        if not result['tracks']['items']:
+        if not result["tracks"]["items"]:
             return
 
-        parsed = result['tracks']['items'][0]
-        uri = parsed['uri']
-        spid = parsed['id']
-        name = parsed['name']
-        artist = parsed['artists'][0]['name']
-        url = parsed['external_urls']['spotify']
+        parsed = result["tracks"]["items"][0]
+        uri = parsed["uri"]
+        spid = parsed["id"]
+        name = parsed["name"]
+        artist = parsed["artists"][0]["name"]
+        url = parsed["external_urls"]["spotify"]
 
         song_dict = {
             "spid": spid,
             "name": name,
             "artist": artist,
             "uri": uri,
-            "url": url
+            "url": url,
         }
         features = self._get_features(spid)
         song_dict.update(features)
         from pprint import pprint as pp
+
         pp(song_dict)
         return song_dict
 

@@ -7,17 +7,29 @@ from app.music.spotify import SpotifySong, SpotifySongResponse
 router = APIRouter()
 
 
-@router.get("/spotify/song", response_model=SpotifySong,
-            summary="Retrieves summary Song data from Spotify",
-            description="Takes both Artist and Song name in query parameter and returns Spotify song data as a "
-                        "dictionary")
+@router.get(
+    "/spotify/song",
+    response_model=SpotifySong,
+    summary="Retrieves summary Song data from Spotify",
+    description="Takes both Artist and Song name in query parameter and returns Spotify song data as a "
+    "dictionary",
+)
 def get_song_data(artist: str, name: str):
     song_object = SpotifySong(artist, name)
     return song_object
 
 
-@router.get("/spotify/artist",
-            summary="Retrieves summary Artist data from Spotify",
-            description="Takes Artist name as a query parameter and returns Spotify artist data as a dictionary")
+@router.get(
+    "/spotify/artist",
+    summary="Retrieves summary Artist data from Spotify",
+    description="Takes Artist name as a query parameter and returns Spotify artist data as a dictionary",
+)
 def get_artist_data(artist_name: str):
     pass
+
+
+my_song = get_song_data("The Knife", "Heartbeats")
+# pp(my_song)
+
+print(f"\nAccessing the 'name' attribute of the my_song object: {my_song.name}")
+print(f"Accessing the 'energy' attribute of the my_song object: {my_song.energy}")
