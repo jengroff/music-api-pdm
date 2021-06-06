@@ -14,14 +14,14 @@ RUN apt-get update \
   && apt-get clean
 
 # install python dependencies
-COPY project/requirements.txt .
+COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
 # add app
-COPY project/app/music .
+COPY ./app/music .
 
 # add entrypoint.sh
-COPY project/entrypoint.sh .
+COPY entrypoint.sh .
 RUN chmod +x /usr/src/app/entrypoint.sh
 
 # run entrypoint.sh
