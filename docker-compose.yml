@@ -4,7 +4,7 @@ services:
 
   web:
     build: ./project
-    command: uvicorn api.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     volumes:
       - ./project:/usr/src/app
     ports:
@@ -21,7 +21,7 @@ services:
   web-db:
       build:
         context: ./project/db
-        dockerfile: project/app/database/Dockerfile
+        dockerfile: Dockerfile
       ports:
         - "5432:5432"
       expose:
