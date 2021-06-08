@@ -1,3 +1,4 @@
+import datetime
 import json
 from typing import Optional, List, Union, Type, Any
 
@@ -6,6 +7,8 @@ from tortoise.models import Model
 from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise.fields.base import Field
 from pydantic import BaseModel
+
+
 
 
 class StrArrayField(Field, list):
@@ -35,23 +38,29 @@ class Status(BaseModel):
     message: str
 
 
-class Artists(Model):
+class Artist(Model):
     id = fields.IntField(pk=True, auto_now_add=True)
-    name = fields.CharField(max_length=255)
-    spid = fields.CharField(max_length=255)
-    uri = fields.CharField(null=True, max_length=255)
-    url = fields.CharField(null=True, max_length=255)
+    name = fields.CharField(max_length=128)
+    spid = fields.CharField(max_length=128)
+    uri = fields.CharField(null=True, max_length=128)
+    url = fields.CharField(null=True, max_length=128)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
-class ArtistInsertSchema(BaseModel):
+ArtistSchema = pydantic_model_creator(Artist)
+
+
+class ArtistPayloadSchema(BaseModel):
     name: str
     spid: str
-    uri: Optional[str] = None
-    url: Optional[str] = None
+    uri: Optional[str]
+    url: Optional[str]
 
 
-Artist_Pydantic = pydantic_model_creator(Artists)
+class AristResponseSchema(ArtistPayloadSchema):
+    id: int
+    created_at: datetime.datetime
+
 
 
 class Playlists(Model):
@@ -89,29 +98,30 @@ class Songs(Model):
     revidur = fields.CharField(null=True, max_length=255)
     uri = fields.CharField(null=True, max_length=255)
     url = fields.CharField(null=True, max_length=255)
-    spempo: fields.IntField(null=True)
-    spenergy: fields.IntField(null=True)
-    spanceability: fields.IntField(null=True)
-    spopularity: fields.IntField(null=True)
-    spm: fields.IntField(null=True)
-    created_at = fields.DatetimeField(auto_now_add=True)
+    tempo: fields.CharField(null=True, max_length=255)
+    energy: fields.CharField(null=True, max_length=255)
+    danceability: fields.CharField(null=True, max_length=255)
+    popularity: fields.CharField(null=True, max_length=255)
+    spm: fields.CharField(null=True, max_length=255)
+    created_at = fields.DatetimeField(null=True, auto_now_add=True)
 
 
-class SongInsertSchema(BaseModel):
-    spid: str
-    name: str
-    artist: Optional[str] = None
-    oridur: Optional[str] = None
-    imark: Optional[str] = None
-    omark: Optional[str] = None
-    revidur: Optional[str] = None
-    uri: Optional[str] = None
-    url: Optional[str] = None
-    spempo: Optional[int] = None
-    spenergy: Optional[int] = None
-    spanceability: Optional[int] = None
-    spopularity: Optional[int] = None
-    spm: Optional[int] = None
+# class SongInsertSchema(BaseModel):
+#     spid: str
+#     name: str
+#     artist: Optional[str] = None
+#     oridur: Optional[str] = None
+#     imark: Optional[str] = None
+#     omark: Optional[str] = None
+#     revidur: Optional[str] = None
+#     uri: Optional[str] = None
+#     url: Optional[str] = None
+#     tempo: Optional[str] = None
+#     energy: Optional[str] = None
+#     danceability: Optional[str] = None
+#     popularity: Optional[str] = None
+#     spm: Optional[str] = None
 
 
 Song_Pydantic = pydantic_model_creator(Songs)
+SongInsertSchema = pydantic_model_creator(Songs, exclude_readonly=True)

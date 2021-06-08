@@ -17,8 +17,9 @@ async def get_songs():
 
 @router.post("/songs", response_model=Song_Pydantic, status_code=201)
 async def create_song(song: SongInsertSchema):
-    song_obj = await Songs.create(**song.dict())
+    song_obj = await Songs.create(**song.dict(exclude_unset=True))
     return await Song_Pydantic.from_tortoise_orm(song_obj)
+
 
 
 @router.get(
