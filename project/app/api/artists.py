@@ -1,61 +1,52 @@
-from fastapi import APIRouter
+from typing import List
 
-from app.database.models import Artist, ArtistSchema, ArtistPayloadSchema, AristResponseSchema
+from fastapi import APIRouter, HTTPException
+from tortoise.contrib.fastapi import HTTPNotFoundError
+from app.database.models import Artist, ArtistSchema, ArtistPayloadSchema, Status
 
 router = APIRouter()
 
 
-# @router.get("/artists", response_model=List[Artist_Pydantic])
-# async def get_artists():
-#     return await Artist_Pydantic.from_queryset(Artists.all())
+@router.get("/artists", response_model=List[ArtistSchema])
+async def get_artists():
+    return await ArtistSchema.from_queryset(Artist.all())
 
 
 @router.post("/artists", response_model=ArtistSchema, status_code=201)
-async def create_artist(payload: ArtistPayloadSchema) -> AristResponseSchema:
-    artist_obj = await artist_post(payload)
-    return artist_obj
+async def create_artist(artist: ArtistPayloadSchema):
+    artist_obj = await Artist.create(**artist.dict(exclude_unset=True))
+    return await ArtistSchema.from_tortoise_orm(artist_obj)
 
 
-async def artist_post(payload:ArtistPayloadSchema):
-    artist = Artist(name=payload.name, spid=payload.spid, url=payload.url, uri=payload.uri)
-    artist_obj = await artist.save()
-    return artist_obj
+@router.get(
+    "/artists/{id}",
+    response_model=ArtistSchema,
+    status_code=200,
+    responses={404: {"model": HTTPNotFoundError}},
+)
+async def get_artist(id: int):
+    return await ArtistSchema.from_queryset_single(Artist.get(id=id))
 
 
-    #     artist: ArtistInsertSchema):
-    # artist_obj = await Artists.create(**artist.dict(exclude_unset=True))
-    # return await Artist_Pydantic.from_tortoise_orm(artist_obj)
+@router.put(
+    "/artists/{id}",
+    response_model=ArtistSchema,
+    status_code=200,
+    responses={404: {"model": HTTPNotFoundError}},
+)
+async def update_artist(id: int, artist: ArtistPayloadSchema):
+    await Artist.filter(id=id).update(**artist.dict(exclude_unset=True))
+    return await ArtistSchema.from_queryset_single(Artist.get(id=id))
 
 
-# @router.get(
-#     "/artists/{id}",
-#     response_model=Artist_Pydantic,
-#     status_code=200,
-#     responses={404: {"model": HTTPNotFoundError}},
-# )
-# async def get_artist(id: int):
-#     return await Artist_Pydantic.from_queryset_single(Artists.get(id=id))
-#
-#
-# @router.put(
-#     "/artists/{id}",
-#     response_model=Artist_Pydantic,
-#     status_code=200,
-#     responses={404: {"model": HTTPNotFoundError}},
-# )
-# async def update_artist(id: int, artist: ArtistInsertSchema):
-#     await Artists.filter(id=id).update(**artist.dict(exclude_unset=True))
-#     return await Artist_Pydantic.from_queryset_single(Artists.get(id=id))
-#
-#
-# @router.delete(
-#     "/artists/{id}",
-#     response_model=Status,
-#     status_code=200,
-#     responses={404: {"model": HTTPNotFoundError}},
-# )
-# async def delete_artist(id: int):
-#     deleted_count = await Artists.filter(id=id).delete()
-#     if not deleted_count:
-#         raise HTTPException(status_code=404, detail=f"Artist {id} not found")
-#     return Status(message=f"Deleted artist {id}")
+@router.delete(
+    "/artists/{id}",
+    response_model=Status,
+    status_code=200,
+    responses={404: {"model": HTTPNotFoundError}},
+)
+async def delete_artist(id: int):
+    deleted_count = await Artist.filter(id=id).delete()
+    if not deleted_count:
+        raise HTTPException(status_code=404, detail=f"Artist {id} not found")
+    return Status(message=f"Deleted artist {id}")
