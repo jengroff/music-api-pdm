@@ -1,10 +1,9 @@
 import json
-import pytest
 
 
 def test_create_playlist(test_app_with_db):
     response = test_app_with_db.post(
-        "/playlists/", data=json.dumps({"name": "the name"})
+        "/playlists", data=json.dumps({"name": "the name"})
     )
 
     assert response.status_code == 201
@@ -12,7 +11,7 @@ def test_create_playlist(test_app_with_db):
 
 
 def test_create_playlists_invalid_json(test_app):
-    response = test_app.post("/playlists/", data=json.dumps({}))
+    response = test_app.post("/playlists", data=json.dumps({}))
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -27,7 +26,7 @@ def test_create_playlists_invalid_json(test_app):
 
 def test_read_playlist(test_app_with_db):
     response = test_app_with_db.post(
-        "/playlists/", data=json.dumps({"name": "the name"})
+        "/playlists", data=json.dumps({"name": "the name"})
     )
     playlist_id = response.json()["id"]
 
@@ -40,7 +39,7 @@ def test_read_playlist(test_app_with_db):
 
 def test_read_all_playlists(test_app_with_db):
     response = test_app_with_db.post(
-        "/playlists/", data=json.dumps({"name": "the name"})
+        "/playlists", data=json.dumps({"name": "the name"})
     )
     playlist_id = response.json()["id"]
 
