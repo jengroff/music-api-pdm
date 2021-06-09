@@ -43,6 +43,25 @@ def test_read_song(test_app_with_db):
     assert response_dict["id"] == id
 
 
+def test_read_song_incorrect_id(test_app_with_db):
+    response = test_app_with_db.get("/songs/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Object does not exist"
+
+    response = test_app_with_db.get("/songs/0")
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["path", "id"],
+                "msg": "ensure this value is greater than 0",
+                "type": "value_error.number.not_gt",
+                "ctx": {"limit_value": 0},
+            }
+        ]
+    }
+
+
 def test_read_all_songs(test_app_with_db):
     response = test_app_with_db.post(
         "/songs", data=json.dumps({"name": "the name", "spid": "the spid"})

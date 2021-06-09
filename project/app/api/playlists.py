@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Path
 from tortoise.contrib.fastapi import HTTPNotFoundError
 
 from app.database.models import (
@@ -28,31 +28,32 @@ async def create_playlist(playlist: PlaylistPayloadSchema):
 @router.get(
     "/playlists/{id}",
     response_model=PlaylistSchema,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
-async def get_playlist(id: int):
-    return await PlaylistSchema.from_queryset_single(Playlist.get(id=id))
+    status_code=200)
+async def get_playlist(id: int = Path(..., gt=0)):
+    playlist = await PlaylistSchema.from_queryset_single(Playlist.get(id=id))
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+
+    return playlist
 
 
 @router.put(
     "/playlists/{id}",
     response_model=PlaylistSchema,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
-async def update_playlist(id: int, playlist: PlaylistPayloadSchema):
-    await Playlist.filter(id=id).update(**playlist.dict(exclude_unset=True))
-    return await PlaylistSchema.from_queryset_single(Playlist.get(id=id))
+    status_code=200)
+async def update_playlist(playlist: PlaylistPayloadSchema, id: int = Path(..., gt=0)):
+    playlist = await Playlist.filter(id=id).update(**playlist.dict(exclude_unset=True))
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+
+    return playlist
 
 
 @router.delete(
     "/playlists/{id}",
     response_model=Status,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}},
-)
-async def delete_playlist(id: int):
+    status_code=200)
+async def delete_playlist(id: int = Path(..., gt=0)):
     deleted_count = await Playlist.filter(id=id).delete()
     if not deleted_count:
         raise HTTPException(status_code=404, detail=f"Playlist {id} not found")

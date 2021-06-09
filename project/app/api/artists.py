@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Path
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from app.database.models import Artist, ArtistSchema, ArtistPayloadSchema, Status
 
@@ -24,7 +24,7 @@ async def create_artist(artist: ArtistPayloadSchema):
     status_code=200,
     responses={404: {"model": HTTPNotFoundError}},
 )
-async def get_artist(id: int):
+async def get_artist(id: int = Path(..., gt=0)):
     return await ArtistSchema.from_queryset_single(Artist.get(id=id))
 
 
@@ -34,7 +34,7 @@ async def get_artist(id: int):
     status_code=200,
     responses={404: {"model": HTTPNotFoundError}},
 )
-async def update_artist(id: int, artist: ArtistPayloadSchema):
+async def update_artist(artist: ArtistPayloadSchema, id: int = Path(..., gt=0)):
     await Artist.filter(id=id).update(**artist.dict(exclude_unset=True))
     return await ArtistSchema.from_queryset_single(Artist.get(id=id))
 
@@ -45,7 +45,7 @@ async def update_artist(id: int, artist: ArtistPayloadSchema):
     status_code=200,
     responses={404: {"model": HTTPNotFoundError}},
 )
-async def delete_artist(id: int):
+async def delete_artist(id: int = Path(..., gt=0)):
     deleted_count = await Artist.filter(id=id).delete()
     if not deleted_count:
         raise HTTPException(status_code=404, detail=f"Artist {id} not found")
