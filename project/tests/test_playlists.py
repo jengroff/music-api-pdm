@@ -67,3 +67,33 @@ def test_read_all_playlists(test_app_with_db):
 
     response_list = response.json()
     assert len(list(filter(lambda d: d["id"] == playlist_id, response_list))) == 1
+
+
+def test_remove_playlist(test_app_with_db):
+    response = test_app_with_db.post(
+        "/playlists", data=json.dumps({"name": "the name"})
+    )
+    id = response.json()["id"]
+
+    response = test_app_with_db.delete(f"/playlists/{id}")
+    assert response.status_code == 200
+    assert response.json()["message"] == f"Deleted playlist {id}"
+
+
+def test_remove_playlist_incorrect_id(test_app_with_db):
+    response = test_app_with_db.delete("/playlists/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Playlist not found"
+
+    response = test_app_with_db.delete("/playlists/0")
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["path", "id"],
+                "msg": "ensure this value is greater than 0",
+                "type": "value_error.number.not_gt",
+                "ctx": {"limit_value": 0},
+            }
+        ]
+    }

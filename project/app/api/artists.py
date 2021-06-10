@@ -48,5 +48,5 @@ async def update_artist(artist: ArtistPayloadSchema, id: int = Path(..., gt=0)):
 async def delete_artist(id: int = Path(..., gt=0)):
     deleted_count = await Artist.filter(id=id).delete()
     if not deleted_count:
-        raise HTTPException(status_code=404, detail=f"Artist {id} not found")
+        raise HTTPException(status_code=404, detail=f"Artist not found")
     return Status(message=f"Deleted artist {id}")

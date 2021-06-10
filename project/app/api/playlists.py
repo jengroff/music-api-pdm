@@ -56,5 +56,5 @@ async def update_playlist(playlist: PlaylistPayloadSchema, id: int = Path(..., g
 async def delete_playlist(id: int = Path(..., gt=0)):
     deleted_count = await Playlist.filter(id=id).delete()
     if not deleted_count:
-        raise HTTPException(status_code=404, detail=f"Playlist {id} not found")
+        raise HTTPException(status_code=404, detail=f"Playlist not found")
     return Status(message=f"Deleted playlist {id}")

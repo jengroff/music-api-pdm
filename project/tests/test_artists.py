@@ -73,3 +73,33 @@ def test_read_all_artists(test_app_with_db):
 
     response_list = response.json()
     assert len(list(filter(lambda d: d["id"] == id, response_list))) == 1
+
+
+def test_remove_artist(test_app_with_db):
+    response = test_app_with_db.post(
+        "/artists", data=json.dumps({"name": "the name", "spid": "the spid"})
+    )
+    id = response.json()["id"]
+
+    response = test_app_with_db.delete(f"/artists/{id}")
+    assert response.status_code == 200
+    assert response.json()["message"] == f"Deleted artist {id}"
+
+
+def test_remove_artist_incorrect_id(test_app_with_db):
+    response = test_app_with_db.delete("/artists/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == f"Artist not found"
+
+    response = test_app_with_db.delete("/artists/0")
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["path", "id"],
+                "msg": "ensure this value is greater than 0",
+                "type": "value_error.number.not_gt",
+                "ctx": {"limit_value": 0},
+            }
+        ]
+    }
