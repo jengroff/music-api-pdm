@@ -22,6 +22,7 @@ async def init_db(app: FastAPI) -> None:
         add_exception_handlers=True,
     )
 
+
 # called through CLI -> 'docker-compose exec web python app/db.py'
 async def generate_schema() -> None:
     log.info("Initializing Tortoise...")

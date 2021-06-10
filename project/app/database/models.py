@@ -87,7 +87,7 @@ class StrArrayField(Field, list):
         super().__init__(**kwargs)
 
     def to_db_value(
-            self, value: List[str], instance: "Union[Type[Model], Model]"
+        self, value: List[str], instance: "Union[Type[Model], Model]"
     ) -> Optional[List[str]]:
         return value
 

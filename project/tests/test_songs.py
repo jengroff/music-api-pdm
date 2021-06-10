@@ -25,7 +25,7 @@ def test_create_songs_invalid_json(test_app):
                 "loc": ["body", "name"],
                 "msg": "field required",
                 "type": "value_error.missing",
-            }
+            },
         ]
     }
 
@@ -106,11 +106,15 @@ def test_remove_song_incorrect_id(test_app_with_db):
 
 
 def test_update_song(test_app_with_db):
-    response = test_app_with_db.post("/songs", data=json.dumps({"name": "the name", "spid": "the spid"}))
+    response = test_app_with_db.post(
+        "/songs", data=json.dumps({"name": "the name", "spid": "the spid"})
+    )
     id = response.json()["id"]
 
-    response = test_app_with_db.put(f"/songs/{id}",
-                                    data=json.dumps({"name": "updated name!", "spid": "updated spid!"}))
+    response = test_app_with_db.put(
+        f"/songs/{id}",
+        data=json.dumps({"name": "updated name!", "spid": "updated spid!"}),
+    )
     assert response.status_code == 200
 
     response_dict = response.json()

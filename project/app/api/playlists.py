@@ -25,10 +25,7 @@ async def create_playlist(playlist: PlaylistPayloadSchema):
     return await PlaylistSchema.from_tortoise_orm(playlist_obj)
 
 
-@router.get(
-    "/playlists/{id}",
-    response_model=PlaylistSchema,
-    status_code=200)
+@router.get("/playlists/{id}", response_model=PlaylistSchema, status_code=200)
 async def get_playlist(id: int = Path(..., gt=0)):
     playlist = await PlaylistSchema.from_queryset_single(Playlist.get(id=id))
     if not playlist:
@@ -37,10 +34,7 @@ async def get_playlist(id: int = Path(..., gt=0)):
     return playlist
 
 
-@router.put(
-    "/playlists/{id}",
-    response_model=PlaylistSchema,
-    status_code=200)
+@router.put("/playlists/{id}", response_model=PlaylistSchema, status_code=200)
 async def update_playlist(playlist: PlaylistPayloadSchema, id: int = Path(..., gt=0)):
     await Playlist.filter(id=id).update(**playlist.dict(exclude_unset=True))
     playlist = await PlaylistSchema.from_queryset_single(Playlist.get(id=id))
@@ -50,10 +44,7 @@ async def update_playlist(playlist: PlaylistPayloadSchema, id: int = Path(..., g
     return playlist
 
 
-@router.delete(
-    "/playlists/{id}",
-    response_model=Status,
-    status_code=200)
+@router.delete("/playlists/{id}", response_model=Status, status_code=200)
 async def delete_playlist(id: int = Path(..., gt=0)):
     deleted_count = await Playlist.filter(id=id).delete()
     if not deleted_count:

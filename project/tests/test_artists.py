@@ -25,7 +25,7 @@ def test_create_artists_invalid_json(test_app):
                 "loc": ["body", "spid"],
                 "msg": "field required",
                 "type": "value_error.missing",
-            }
+            },
         ]
     }
 
@@ -106,11 +106,15 @@ def test_remove_artist_incorrect_id(test_app_with_db):
 
 
 def test_update_artist(test_app_with_db):
-    response = test_app_with_db.post("/artists", data=json.dumps({"name": "the name", "spid": "the spid"}))
+    response = test_app_with_db.post(
+        "/artists", data=json.dumps({"name": "the name", "spid": "the spid"})
+    )
     id = response.json()["id"]
 
-    response = test_app_with_db.put(f"/artists/{id}",
-                                    data=json.dumps({"name": "updated name!", "spid": "updated spid!"}))
+    response = test_app_with_db.put(
+        f"/artists/{id}",
+        data=json.dumps({"name": "updated name!", "spid": "updated spid!"}),
+    )
     assert response.status_code == 200
 
     response_dict = response.json()
