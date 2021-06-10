@@ -18,7 +18,7 @@ COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
 # add app
-COPY ./app/music .
+COPY . .
 
 # add entrypoint.sh
 COPY entrypoint.sh .

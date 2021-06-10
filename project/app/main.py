@@ -15,10 +15,9 @@ own module inside the "routes" directory.
 
 log = logging.getLogger("uvicorn")
 
+
 def create_application() -> FastAPI:
-    application = FastAPI(title="Everyton Music API Documentation",
-                          description="API for creating, updating, and retrieving Songs, Playlists, and Artists",
-                          version="1.0.0")
+    application = FastAPI()
     application.include_router(ping.router, tags=["Application"])
     application.include_router(playlists.router, tags=["Playlists"])
     application.include_router(songs.router, tags=["Songs"])
@@ -34,7 +33,7 @@ app = create_application()
 @app.on_event("startup")
 async def startup_event():
     log.info("Starting up...")
-    init_db(app)
+    await init_db(app)
 
 
 @app.on_event("shutdown")
