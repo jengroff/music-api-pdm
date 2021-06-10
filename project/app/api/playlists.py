@@ -42,7 +42,8 @@ async def get_playlist(id: int = Path(..., gt=0)):
     response_model=PlaylistSchema,
     status_code=200)
 async def update_playlist(playlist: PlaylistPayloadSchema, id: int = Path(..., gt=0)):
-    playlist = await Playlist.filter(id=id).update(**playlist.dict(exclude_unset=True))
+    await Playlist.filter(id=id).update(**playlist.dict(exclude_unset=True))
+    playlist = await PlaylistSchema.from_queryset_single(Playlist.get(id=id))
     if not playlist:
         raise HTTPException(status_code=404, detail="Playlist not found")
 

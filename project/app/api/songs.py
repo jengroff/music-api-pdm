@@ -37,9 +37,7 @@ async def get_song(id: int = Path(..., gt=0)):
 @router.put(
     "/songs/{id}",
     response_model=SongSchema,
-    status_code=200,
-    responses={404: {"model": HTTPNotFoundError}}
-)
+    status_code=200)
 async def update_song(song: SongPayloadSchema, id: int = Path(..., gt=0)):
     await Song.filter(id=id).update(**song.dict(exclude_unset=True))
     song = await SongSchema.from_queryset_single(Song.get(id=id))
