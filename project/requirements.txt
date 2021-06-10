@@ -7,3 +7,4 @@ tortoise-orm==0.16.21
 pytest
 gunicorn==20.0.4
 python-dotenv
+pytest-cov==2.11.1
