@@ -23,6 +23,7 @@ Artist = namedtuple("Artist", "spid name uri url")
 class SongNotFoundException(Exception):
     pass
 
+
 class ArtistNotFoundException(Exception):
     pass
 
@@ -70,14 +71,14 @@ class Spotify:
     def get_artist(self, artist):
         search = f"{artist}"
         result = self.sp.search(search)
-        if not result['tracks']['items'][0]['artists']:
+        if not result["tracks"]["items"][0]["artists"]:
             raise ArtistNotFoundException("Artist not found")
 
-        parsed = result['tracks']['items'][0]['artists'][0]
-        spid = parsed['id']
-        name = parsed['name']
-        uri = parsed['uri']
-        url = parsed['external_urls']['spotify']
+        parsed = result["tracks"]["items"][0]["artists"][0]
+        spid = parsed["id"]
+        name = parsed["name"]
+        uri = parsed["uri"]
+        url = parsed["external_urls"]["spotify"]
         return Artist(
             spid,
             name,
