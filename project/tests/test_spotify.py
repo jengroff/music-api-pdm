@@ -1,6 +1,3 @@
-import json
-
-
 def test_get_artist(test_app):
     response = test_app.get("/spotify/artist?artist=U2")
     assert response.status_code == 200
