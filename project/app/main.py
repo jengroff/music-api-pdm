@@ -9,7 +9,7 @@ from app.db import init_db
 
 The create_application() function loads each of the endpoint "groups"
 (playlists, artists, songs, spotify) as separate routers, each in their
-own module inside the "routes" directory.
+own module inside the "api" directory.
 
 """
 

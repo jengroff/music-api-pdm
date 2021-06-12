@@ -33,5 +33,8 @@ def get_song_data(artist: str, name: str):
         )
     ),
 )
-def get_artist_data(artist_name: str):
-    pass
+def get_artist_data(artist: str):
+    sp = Spotify()
+    artist = sp.get_artist(artist)._asdict()
+    json_compatible_item_data = jsonable_encoder(artist)
+    return JSONResponse(content=json_compatible_item_data)
