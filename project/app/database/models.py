@@ -1,6 +1,7 @@
 import datetime
 import json
 from typing import Optional, List, Union, Type, Any
+import enum
 
 from tortoise import fields
 from tortoise.models import Model
@@ -120,4 +121,32 @@ class PlaylistPayloadSchema(BaseModel):
 
 
 class PlaylistResponseSchema(PlaylistPayloadSchema):
+    id: int
+
+
+class Role(str, enum.Enum):
+    admin: str = "Admin"
+    consumer: str = "Consumer"
+
+
+class User(Model):
+    id = fields.IntField(pk=True, auto_now_add=True)
+    name = fields.CharField(max_length=255, null=True)
+    email = fields.CharField(max_length=255)
+    password = fields.CharField(max_length=255)
+    role = fields.CharField(max_length=255, null=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+
+UserSchema = pydantic_model_creator(User)
+
+
+class UserPayloadSchema(BaseModel):
+    name: Optional[str]
+    email: str
+    password: str
+    role: Optional[Role]
+
+
+class UserResponseSchema(UserPayloadSchema):
     id: int
