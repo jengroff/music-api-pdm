@@ -16,25 +16,25 @@ def test_create_user(test_app_with_db):
     assert response.json()["role"] == "Admin"
 
 
-# def test_create_users_invalid_json(test_app):
-#     response = test_app.post("/users", data=json.dumps({}))
-#     assert response.status_code == 422
-#     assert response.json() == {
-#         "detail": [
-#             {
-#                 "loc": ["body", "name"],
-#                 "msg": "field required",
-#                 "type": "value_error.missing",
-#             },
-#             {
-#                 "loc": ["body", "spid"],
-#                 "msg": "field required",
-#                 "type": "value_error.missing",
-#             },
-#         ]
-#     }
-#
-#
+def test_create_users_invalid_json(test_app):
+    response = test_app.post("/users", data=json.dumps({}))
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["body", "email"],
+                "msg": "field required",
+                "type": "value_error.missing",
+            },
+            {
+                "loc": ["body", "password"],
+                "msg": "field required",
+                "type": "value_error.missing",
+            },
+        ]
+    }
+
+
 def test_read_user(test_app_with_db):
     response = test_app_with_db.post(
         "/users", data=json.dumps({
