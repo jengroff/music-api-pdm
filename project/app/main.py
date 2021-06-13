@@ -22,8 +22,8 @@ def create_application() -> FastAPI:
     application.include_router(playlists.router, tags=["Playlists"])
     application.include_router(songs.router, tags=["Songs"])
     application.include_router(artists.router, tags=["Artists"])
-    application.include_router(spot.router, tags=["Spotify"])
     application.include_router(users.router, tags=["Users"])
+    application.include_router(spot.router, tags=["Spotify"])
 
     return application
 

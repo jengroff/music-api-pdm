@@ -150,3 +150,10 @@ class UserPayloadSchema(BaseModel):
 
 class UserResponseSchema(UserPayloadSchema):
     id: int
+
+
+class JWTUser(BaseModel):
+    username: str
+    password: str
+    disabled: bool = False
+    role: str = None
