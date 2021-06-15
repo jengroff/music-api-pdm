@@ -3,11 +3,10 @@ import json
 
 def test_create_user(test_app_with_db):
     response = test_app_with_db.post(
-        "/users", data=json.dumps({
-            "email": "the email",
-            "password": "the password",
-            "role": "Admin"
-        })
+        "/users",
+        data=json.dumps(
+            {"email": "the email", "password": "the password", "role": "Admin"}
+        ),
     )
 
     assert response.status_code == 201
@@ -37,11 +36,10 @@ def test_create_users_invalid_json(test_app):
 
 def test_read_user(test_app_with_db):
     response = test_app_with_db.post(
-        "/users", data=json.dumps({
-            "email": "the email",
-            "password": "the password",
-            "role": "Admin"
-        })
+        "/users",
+        data=json.dumps(
+            {"email": "the email", "password": "the password", "role": "Admin"}
+        ),
     )
     id = response.json()["id"]
 
@@ -73,11 +71,10 @@ def test_read_user_incorrect_id(test_app_with_db):
 
 def test_read_all_users(test_app_with_db):
     response = test_app_with_db.post(
-        "/users", data=json.dumps({
-            "email": "the email",
-            "password": "the password",
-            "role": "Admin"
-        })
+        "/users",
+        data=json.dumps(
+            {"email": "the email", "password": "the password", "role": "Admin"}
+        ),
     )
     id = response.json()["id"]
 
@@ -90,11 +87,10 @@ def test_read_all_users(test_app_with_db):
 
 def test_remove_user(test_app_with_db):
     response = test_app_with_db.post(
-        "/users", data=json.dumps({
-            "email": "the email",
-            "password": "the password",
-            "role": "Admin"
-        })
+        "/users",
+        data=json.dumps(
+            {"email": "the email", "password": "the password", "role": "Admin"}
+        ),
     )
     id = response.json()["id"]
 
@@ -124,20 +120,16 @@ def test_remove_user_incorrect_id(test_app_with_db):
 
 def test_update_user(test_app_with_db):
     response = test_app_with_db.post(
-        "/users", data=json.dumps({
-            "email": "the email",
-            "password": "the password",
-            "role": "Admin"
-        })
+        "/users",
+        data=json.dumps(
+            {"email": "the email", "password": "the password", "role": "Admin"}
+        ),
     )
     id = response.json()["id"]
 
     response = test_app_with_db.put(
         f"/users/{id}",
-        data=json.dumps({
-            "email": "updated email",
-            "password": "updated password"
-        })
+        data=json.dumps({"email": "updated email", "password": "updated password"}),
     )
     assert response.status_code == 200
 

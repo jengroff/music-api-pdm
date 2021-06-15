@@ -1,13 +1,12 @@
-import datetime
 import json
 from typing import Optional, List, Union, Type, Any
-import enum
 
 from tortoise import fields
 from tortoise.models import Model
 from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise.fields.base import Field
 from pydantic import BaseModel, AnyHttpUrl
+from passlib.hash import bcrypt
 
 
 class Status(BaseModel):
@@ -124,36 +123,24 @@ class PlaylistResponseSchema(PlaylistPayloadSchema):
     id: int
 
 
-class Role(str, enum.Enum):
-    admin: str = "Admin"
-    consumer: str = "Consumer"
-
-
 class User(Model):
+    """
+    This is the Tortoise ORM User model, which represents what is going on
+    in the database.
+
+    User_Pydantic is the Pydantic User model, which represents what is going
+    on in the app. UserIn_Pydantic represents what can be passed in to the
+    db, and excludes fields that are read-only, like 'id' and 'created_at'.
+    """
+
     id = fields.IntField(pk=True, auto_now_add=True)
-    name = fields.CharField(max_length=255, null=True)
-    email = fields.CharField(max_length=255)
-    password = fields.CharField(max_length=255)
-    role = fields.CharField(max_length=255, null=True)
-    created_at = fields.DatetimeField(auto_now_add=True)
+    username = fields.CharField(max_length=64, unique=True)
+    password_hash = fields.CharField(max_length=128)
+
+    def verify_password(self, password):
+        return bcrypt.verify(password, self.password_hash)
 
 
-UserSchema = pydantic_model_creator(User)
+UserSchema = pydantic_model_creator(User, name="User")
 
-
-class UserPayloadSchema(BaseModel):
-    name: Optional[str]
-    email: str
-    password: str
-    role: Optional[Role]
-
-
-class UserResponseSchema(UserPayloadSchema):
-    id: int
-
-
-class JWTUser(BaseModel):
-    username: str
-    password: str
-    disabled: bool = False
-    role: str = None
+UserIn_Pydantic = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)

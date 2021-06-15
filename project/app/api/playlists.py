@@ -1,32 +1,32 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Path
-from tortoise.contrib.fastapi import HTTPNotFoundError
+from fastapi import APIRouter, HTTPException, Path, Depends
+from app.api.auth import get_current_user
 
-from app.database.models import (
-    Playlist,
-    PlaylistSchema,
-    PlaylistPayloadSchema,
-    Status,
-)
+
+from app.database.models import Playlist, PlaylistSchema, PlaylistPayloadSchema, Status
 
 
 router = APIRouter()
 
 
 @router.get("/playlists", response_model=List[PlaylistSchema])
-async def get_playlists():
+async def get_playlists(token: str = Depends(get_current_user)):
     return await PlaylistSchema.from_queryset(Playlist.all())
 
 
 @router.post("/playlists", response_model=PlaylistSchema, status_code=201)
-async def create_playlist(playlist: PlaylistPayloadSchema):
+async def create_playlist(
+    playlist: PlaylistPayloadSchema, token: str = Depends(get_current_user)
+):
     playlist_obj = await Playlist.create(**playlist.dict(exclude_unset=True))
     return await PlaylistSchema.from_tortoise_orm(playlist_obj)
 
 
 @router.get("/playlists/{id}", response_model=PlaylistSchema, status_code=200)
-async def get_playlist(id: int = Path(..., gt=0)):
+async def get_playlist(
+    id: int = Path(..., gt=0), token: str = Depends(get_current_user)
+):
     playlist = await PlaylistSchema.from_queryset_single(Playlist.get(id=id))
     if not playlist:
         raise HTTPException(status_code=404, detail="Playlist not found")
@@ -35,7 +35,11 @@ async def get_playlist(id: int = Path(..., gt=0)):
 
 
 @router.put("/playlists/{id}", response_model=PlaylistSchema, status_code=200)
-async def update_playlist(playlist: PlaylistPayloadSchema, id: int = Path(..., gt=0)):
+async def update_playlist(
+    playlist: PlaylistPayloadSchema,
+    id: int = Path(..., gt=0),
+    token: str = Depends(get_current_user),
+):
     await Playlist.filter(id=id).update(**playlist.dict(exclude_unset=True))
     playlist = await PlaylistSchema.from_queryset_single(Playlist.get(id=id))
     if not playlist:
@@ -45,7 +49,9 @@ async def update_playlist(playlist: PlaylistPayloadSchema, id: int = Path(..., g
 
 
 @router.delete("/playlists/{id}", response_model=Status, status_code=200)
-async def delete_playlist(id: int = Path(..., gt=0)):
+async def delete_playlist(
+    id: int = Path(..., gt=0), token: str = Depends(get_current_user)
+):
     deleted_count = await Playlist.filter(id=id).delete()
     if not deleted_count:
         raise HTTPException(status_code=404, detail=f"Playlist not found")
