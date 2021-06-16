@@ -15,7 +15,7 @@ own module inside the "api" directory.
 
 log = logging.getLogger("uvicorn")
 
-
+# mouunt the routes here 
 def create_application() -> FastAPI:
     application = FastAPI()
     application.include_router(ping.router, tags=["Application"])
