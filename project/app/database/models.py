@@ -30,7 +30,7 @@ class Song(Model):
     id = fields.IntField(pk=True, auto_now_add=True)
     spid = fields.CharField(max_length=255)
     name = fields.CharField(max_length=255)
-    artist = fields.CharField(max_length=255)
+    artist = fields.CharField(null=True, max_length=255)
     tempo = fields.IntField(null=True)
     energy = fields.IntField(null=True)
     danceability = fields.IntField(null=True)
