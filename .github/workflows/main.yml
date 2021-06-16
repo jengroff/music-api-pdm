@@ -1,4 +1,4 @@
-name: Continuous Integration and Delivery
+name: CI/CD
 
 on: [push]
 
@@ -67,6 +67,6 @@ jobs:
       - name: Flake8
         run: docker exec music-api-pdm python -m flake8 .
       - name: Black
-        run: docker exec music-api-pdm python -m black . --check
+        run: docker exec music-api-pdm python -m black .
       - name: isort
         run: docker exec music-api-pdm python -m isort . --check-only
