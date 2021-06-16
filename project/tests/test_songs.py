@@ -34,6 +34,7 @@ def test_read_song(test_app_with_db):
     response = test_app_with_db.post(
         "/songs", data=json.dumps({"name": "the name", "spid": "the spid"})
     )
+
     id = response.json()["id"]
 
     response = test_app_with_db.get(f"/songs/{id}")

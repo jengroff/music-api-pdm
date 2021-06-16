@@ -22,65 +22,28 @@ class Artist(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
-ArtistSchema = pydantic_model_creator(Artist)
-
-
-class ArtistPayloadSchema(BaseModel):
-    name: str
-    spid: str
-    uri: Optional[str]
-    url: Optional[AnyHttpUrl]
-
-
-class ArtistResponseSchema(ArtistPayloadSchema):
-    id: int
+ArtistPydantic = pydantic_model_creator(Artist, name="Artist")
+ArtistInPydantic = pydantic_model_creator(Artist, name="ArtistIn", exclude_readonly=True)
 
 
 class Song(Model):
-    """
-    This references a song and all its attributes as stored in the database
-    """
-
     id = fields.IntField(pk=True, auto_now_add=True)
     spid = fields.CharField(max_length=255)
     name = fields.CharField(max_length=255)
     artist = fields.CharField(null=True, max_length=255)
-    oridur = fields.CharField(null=True, max_length=255)
-    imark = fields.CharField(null=True, max_length=255)
-    omark = fields.CharField(null=True, max_length=255)
-    revidur = fields.CharField(null=True, max_length=255)
+    tempo = fields.IntField(null=True)
+    energy = fields.IntField(null=True)
+    danceability = fields.IntField(null=True)
     uri = fields.CharField(null=True, max_length=255)
     url = fields.CharField(null=True, max_length=255)
-    spm: fields.CharField(null=True, max_length=255)
     created_at = fields.DatetimeField(null=True, auto_now_add=True)
 
 
-SongSchema = pydantic_model_creator(Song)
-
-
-class SongPayloadSchema(BaseModel):
-    spid: str
-    name: str
-    artist: Optional[str]
-    oridur: Optional[str]
-    imark: Optional[str]
-    omark: Optional[str]
-    revidur: Optional[str]
-    uri: Optional[str]
-    url: Optional[AnyHttpUrl]
-    spm: Optional[str]
-
-
-class SongResponseSchema(SongPayloadSchema):
-    id: int
+SongPydantic = pydantic_model_creator(Song, name="Song")
+SongInPydantic = pydantic_model_creator(Song, name="SongIn", exclude_readonly=True)
 
 
 class StrArrayField(Field, list):
-    """
-    String Array field specifically for PostgreSQL.
-    This field can store list of str values.
-    """
-
     SQL_TYPE = "text[]"
 
     def __init__(self, **kwargs):
@@ -108,31 +71,17 @@ class Playlist(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
-PlaylistSchema = pydantic_model_creator(Playlist)
+PlaylistPydantic = pydantic_model_creator(Playlist, name="Playlist")
+PlaylistInPydantic = pydantic_model_creator(Playlist, name="PlaylistIn", exclude_readonly=True)
 
-
-class PlaylistPayloadSchema(BaseModel):
+class PlaylistNamePatch(BaseModel):
     name: str
-    songs: Optional[List[str]]
-    spm_min: Optional[int]
-    spm_max: Optional[int]
-    spm_avg: Optional[int]
 
-
-class PlaylistResponseSchema(PlaylistPayloadSchema):
-    id: int
+class PlaylistSongPatch(BaseModel):
+    songs: List[str]
 
 
 class User(Model):
-    """
-    This is the Tortoise ORM User model, which represents what is going on
-    in the database.
-
-    User_Pydantic is the Pydantic User model, which represents what is going
-    on in the app. UserIn_Pydantic represents what can be passed in to the
-    db, and excludes fields that are read-only, like 'id' and 'created_at'.
-    """
-
     id = fields.IntField(pk=True, auto_now_add=True)
     username = fields.CharField(max_length=64, unique=True)
     password_hash = fields.CharField(max_length=128)
@@ -141,6 +90,5 @@ class User(Model):
         return bcrypt.verify(password, self.password_hash)
 
 
-UserSchema = pydantic_model_creator(User, name="User")
-
-UserIn_Pydantic = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)
+UserPydantic = pydantic_model_creator(User, name="User")
+UserInPydantic = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)

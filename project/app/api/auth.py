@@ -1,11 +1,12 @@
 import jwt
 import os
+from typing import List
 
 from dotenv import load_dotenv
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter, Path
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.hash import bcrypt
-from app.database.models import User, UserSchema, UserIn_Pydantic
+from app.database.models import User, UserPydantic, UserInPydantic, Status
 
 
 router = APIRouter()
@@ -38,10 +39,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             detail="Invalid username or password",
         )
 
-    return await UserSchema.from_tortoise_orm(user)
+    return await UserPydantic.from_tortoise_orm(user)
 
 
-@router.post("/token")
+@router.post("/users", response_model=UserPydantic, status_code=201, summary="Create a new user (using email & "
+                                                                             "password)")
+async def create_user(user: UserInPydantic):
+    user_obj = User(
+        username=user.username, password_hash=bcrypt.hash(user.password_hash)
+    )
+    await user_obj.save()
+    return await UserPydantic.from_tortoise_orm(user_obj)
+
+
+@router.post("/token", summary="Login to authenticate and receive JWT")
 async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await authenticate_user(form_data.username, form_data.password)
 
@@ -50,23 +61,23 @@ async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
         )
-
-    user_obj = await UserSchema.from_tortoise_orm(user)
-
+    user_obj = await UserPydantic.from_tortoise_orm(user)
     token = jwt.encode(user_obj.dict(), jwt_secret)
 
     return {"access_token": token, "token_type": "bearer"}
 
 
-@router.post("/users", response_model=UserSchema, status_code=201)
-async def create_user(user: UserIn_Pydantic):
-    user_obj = User(
-        username=user.username, password_hash=bcrypt.hash(user.password_hash)
-    )
-    await user_obj.save()
-    return await UserSchema.from_tortoise_orm(user_obj)
+@router.get("/users", response_model=List[UserPydantic], summary="Get list of all users in the database")
+async def get_users():
+    return await UserPydantic.from_queryset(User.all())
 
 
-@router.get("/users/me", response_model=UserSchema)
-async def get_user(user: UserSchema = Depends(get_current_user)):
-    return user
+@router.delete("/users/{id}", response_model=Status, status_code=200, summary="Delete specific user by User ID")
+async def delete_user(
+    id: int = Path(..., gt=0),
+):
+    deleted_count = await User.filter(id=id).delete()
+    if not deleted_count:
+        raise HTTPException(status_code=404, detail=f"User not found")
+    return Status(message=f"Deleted user {id}")
+
