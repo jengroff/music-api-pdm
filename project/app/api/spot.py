@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.get(
     "/spotify/song",
-    summary="Retrieves summary Song data from Spotify",
+    summary="Fetch song data from Spotify (using artist and song name as parameters)",
     description=(
         "Takes both Artist and Song name in query parameter "
         "and returns Spotify song data as a dictionary"
@@ -25,7 +25,7 @@ def get_song_data(artist: str, name: str):
 
 @router.get(
     "/spotify/artist",
-    summary="Retrieves summary Artist data from Spotify",
+    summary="Fetch artist data from Spotify (using artist name as parameter)",
     description=(
         (
             "Takes Artist name as a query parameter and returns "
@@ -33,5 +33,8 @@ def get_song_data(artist: str, name: str):
         )
     ),
 )
-def get_artist_data(artist_name: str):
-    pass
+def get_artist_data(artist: str):
+    sp = Spotify()
+    artist = sp.get_artist(artist)._asdict()
+    json_compatible_item_data = jsonable_encoder(artist)
+    return JSONResponse(content=json_compatible_item_data)

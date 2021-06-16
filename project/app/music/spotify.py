@@ -17,9 +17,14 @@ scope = os.getenv("SPOTIFY_SCOPE")
 MARKET, LIMIT = "US", 1
 Song = namedtuple("Song", ("spid artist name tempo energy " "danceability uri url"))
 Features = namedtuple("Features", "energy danceability tempo")
+Artist = namedtuple("Artist", "spid name uri url")
 
 
 class SongNotFoundException(Exception):
+    pass
+
+
+class ArtistNotFoundException(Exception):
     pass
 
 
@@ -43,7 +48,7 @@ class Spotify:
         search = f"{artist}+{name}"
         result = self.sp.search(search, limit=LIMIT, market=MARKET)
         if not result["tracks"]["items"]:
-            raise SongNotFoundException
+            raise SongNotFoundException("Song not found")
 
         parsed = result["tracks"]["items"][0]
         spid = parsed["id"]
@@ -59,6 +64,24 @@ class Spotify:
             features.tempo,
             features.energy,
             features.danceability,
+            uri,
+            url,
+        )
+
+    def get_artist(self, artist):
+        search = f"{artist}"
+        result = self.sp.search(search)
+        if not result["tracks"]["items"][0]["artists"]:
+            raise ArtistNotFoundException("Artist not found")
+
+        parsed = result["tracks"]["items"][0]["artists"][0]
+        spid = parsed["id"]
+        name = parsed["name"]
+        uri = parsed["uri"]
+        url = parsed["external_urls"]["spotify"]
+        return Artist(
+            spid,
+            name,
             uri,
             url,
         )
