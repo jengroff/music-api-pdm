@@ -66,5 +66,3 @@ jobs:
         run: docker exec music-api-pdm python -m pytest .
       - name: Black
         run: docker exec music-api-pdm python -m black .
-      - name: Flake8
-        run: docker exec music-api-pdm python -m flake8 .
