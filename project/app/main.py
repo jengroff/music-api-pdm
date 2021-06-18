@@ -17,7 +17,13 @@ log = logging.getLogger("uvicorn")
 
 # mouunt the routes here 
 def create_application() -> FastAPI:
-    application = FastAPI()
+    application = FastAPI(
+        title="Everyton / Spring Music API",
+        description="Built for a handsome Swedish bastard, this API "
+                    "is used for creating, storing, and retrieving playlists, "
+                    "songs, and artists in a PostgresQL database.",
+        version = "1.0.0",
+    )
     application.include_router(ping.router, tags=["Application"])
     application.include_router(playlists.router, tags=["Playlists"])
     application.include_router(songs.router, tags=["Songs"])
