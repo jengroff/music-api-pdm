@@ -22,18 +22,18 @@ def test_app():
         yield test_client
 
 
-@pytest.fixture(scope="module")
-def songs():
-    songs = []
-    for i in range(1, 5):
-        song = Song.create(**dict(
-            spid=i,
-            name='a song')
-        )
-        songs.append(song)
-    yield songs
-    # teardown logic
-    Song.delete()
+# @pytest.fixture(scope="module")
+# def songs():
+#     songs = []
+#     for i in range(1, 5):
+#         song = Song.create(**dict(
+#             spid=i,
+#             name='a song')
+#         )
+#         songs.append(song)
+#     yield songs
+#     # teardown logic
+#     Song.delete()
 
 
 @pytest.fixture(scope="module")
