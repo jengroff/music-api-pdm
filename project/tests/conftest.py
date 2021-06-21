@@ -27,8 +27,8 @@ def test_app():
 #     songs = []
 #     for i in range(1, 5):
 #         song = Song.create(**dict(
-#             spid=i,
-#             name='a song')
+#             spid="i",
+#             name="a song")
 #         )
 #         songs.append(song)
 #     yield songs

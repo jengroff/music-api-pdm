@@ -10,8 +10,13 @@ def test_create_playlist(test_app_with_db):
     assert response.json()["name"] == "the name"
 
 
-def test_create_playlist_with_songs(test_app_with_db, songs):
-    breakpoint()
+# def test_create_playlist_with_songs(test_app_with_db, songs):
+#     response = test_app_with_db.post(
+#         "/playlists", data=songs)
+#
+#     assert response.status_code == 201
+#     # assert response.json()["name"] == "the name"
+
 
 
 def test_create_playlists_invalid_json(test_app):
