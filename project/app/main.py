@@ -15,7 +15,7 @@ own module inside the "api" directory.
 
 log = logging.getLogger("uvicorn")
 
-# mouunt the routes here 
+# mount the routers
 def create_application() -> FastAPI:
     application = FastAPI(
         title="Everyton / Spring Music API",
