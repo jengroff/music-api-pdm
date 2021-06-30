@@ -64,7 +64,7 @@ class StrArrayField(Field, list):
 class Playlist(Model):
     id = fields.IntField(pk=True, auto_now_add=True)
     name = fields.CharField(max_length=255)
-    songs = StrArrayField(null=True)
+    songs = fields.ManyToManyField('models.Song', related_name='songs')
     spm_min = fields.IntField(null=True)
     spm_max = fields.IntField(null=True)
     spm_avg = fields.IntField(null=True)
