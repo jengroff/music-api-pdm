@@ -9,7 +9,7 @@ from app.api.auth import get_current_user
 router = APIRouter()
 
 
-@router.get("/songs", response_model=List[SongPydantic], summary="Get list of all songs in the database")
+@router.get("/songs", response_model=List[SongPydantic], summary="Get list of all songs")
 async def get_songs():
     return await SongPydantic.from_queryset(Song.all())
 
