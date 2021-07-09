@@ -41,47 +41,47 @@ def get_artist_data(artist: str):
     return JSONResponse(content=json_compatible_item_data)
 
 
-@router.get(
-    "/spotify/artist/db",
-    summary="Fetch artist data from Spotify AND save to database (= time saver)",
-    description=(
-            (
-                    "Takes Artist name as a query parameter and"
-                    "stores result in the database"
-            )
-    ),
-)
-async def create_artist_db(artist):
-
-    """
-    Fetches artist data from Spotify then automatically
-    adds it to the artists table in the db, saving a step
-    """
-
-    sp = Spotify()
-    artist = sp.get_artist(artist)._asdict()
-    artist_obj = await Artist.create(**artist)
-    return await ArtistPydantic.from_tortoise_orm(artist_obj)
-
-
-@router.get(
-    "/spotify/song/db",
-    summary="Fetch artist data from Spotify AND save to database (= time saver)",
-    description=(
-            (
-                    "Takes Song name as a query parameter and"
-                    "stores result in the database"
-            )
-    ),
-)
-async def create_song_db(artist: str, name: str):
-    """
-     Fetches song data from Spotify then automatically
-     adds it to the songs table in the db, saving a step
-     """
-
-    sp = Spotify()
-    song = sp.get_song(artist, name)._asdict()
-    song_obj = await Song.create(**song)
-    return await SongPydantic.from_tortoise_orm(song_obj)
+# @router.get(
+#     "/spotify/artist/db",
+#     summary="Fetch artist data from Spotify AND save to database (= time saver)",
+#     description=(
+#             (
+#                     "Takes Artist name as a query parameter and"
+#                     "stores result in the database"
+#             )
+#     ),
+# )
+# async def create_artist_db(artist):
+#
+#     """
+#     Fetches artist data from Spotify then automatically
+#     adds it to the artists table in the db, saving a step
+#     """
+#
+#     sp = Spotify()
+#     artist = sp.get_artist(artist)._asdict()
+#     artist_obj = await Artist.create(**artist)
+#     return await ArtistPydantic.from_tortoise_orm(artist_obj)
+#
+#
+# @router.get(
+#     "/spotify/song/db",
+#     summary="Fetch artist data from Spotify AND save to database (= time saver)",
+#     description=(
+#             (
+#                     "Takes Song name as a query parameter and"
+#                     "stores result in the database"
+#             )
+#     ),
+# )
+# async def create_song_db(artist: str, name: str):
+#     """
+#      Fetches song data from Spotify then automatically
+#      adds it to the songs table in the db, saving a step
+#      """
+#
+#     sp = Spotify()
+#     song = sp.get_song(artist, name)._asdict()
+#     song_obj = await Song.create(**song)
+#     return await SongPydantic.from_tortoise_orm(song_obj)
 
