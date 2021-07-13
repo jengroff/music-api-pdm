@@ -3,6 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from app.music.spotify import Spotify
+from app.music.features import Features
 
 
 router = APIRouter()
@@ -38,3 +39,19 @@ def get_artist_data(artist: str):
     artist = sp.get_artist(artist)._asdict()
     json_compatible_item_data = jsonable_encoder(artist)
     return JSONResponse(content=json_compatible_item_data)
+
+
+@router.get(
+    "/spotify/artist/all",
+    summary="RETURNS ALL SONGS FOR THE SPECIFIED ARTIST. BE CAREFUL!)",
+    description=(
+        (
+            "Takes Artist name as a query parameter and returns "
+            "EVERY ONE OF THEIR SONGS"
+        )
+    ),
+)
+def get_artist_songs(artist: str):
+    sf = Features(artist)
+    artist_songs = sf.get_song_features()
+    return artist_songs
