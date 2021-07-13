@@ -27,10 +27,9 @@ ArtistInPydantic = pydantic_model_creator(Artist, name="ArtistIn", exclude_reado
 
 
 class Song(Model):
-    pid = fields.IntField(pk=True, auto_now_add=True)
     album = fields.CharField(null=True, max_length=255)
     track_number = fields.IntField(null=True)
-    id = fields.CharField(null=True, max_length=255)
+    id = fields.CharField(pk=True, max_length=255)
     name = fields.CharField(max_length=255)
     uri = fields.CharField(null=True, max_length=255)
     acousticness = fields.FloatField(null=True)
