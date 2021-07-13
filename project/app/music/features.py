@@ -1,5 +1,4 @@
-import requests
-import json
+
 import time
 import spotipy
 import spotipy.util as util
@@ -8,6 +7,7 @@ from pprint import pprint as pp
 import numpy as np
 import pandas as pd
 import sqlite3
+from dotenv import load_dotenv
 
 
 """
@@ -16,8 +16,9 @@ in the same directory
 """
 
 
-client = '7aea9bb99f5b4737af25d47b0a722e03'
-secret = '363cc8e2c8cf4e02a792a05fb17e146a'
+load_dotenv()
+client = "CLIENT"
+secret = "SECRET"
 
 
 def spotify_auth():

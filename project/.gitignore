@@ -81,6 +81,9 @@ target/
 profile_default/
 ipython_config.py
 
+# sqlite database
+.sqlite
+
 # pyenv
 .python-version
 
