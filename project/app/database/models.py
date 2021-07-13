@@ -27,16 +27,24 @@ ArtistInPydantic = pydantic_model_creator(Artist, name="ArtistIn", exclude_reado
 
 
 class Song(Model):
-    id = fields.IntField(pk=True, auto_now_add=True)
-    spid = fields.CharField(max_length=255)
+    pid = fields.IntField(pk=True, auto_now_add=True)
+    album = fields.CharField(null=True, max_length=255)
+    track_number = fields.IntField(null=True)
+    id = fields.CharField(null=True, max_length=255)
     name = fields.CharField(max_length=255)
-    artist = fields.CharField(null=True, max_length=255)
-    tempo = fields.IntField(null=True)
-    energy = fields.IntField(null=True)
-    danceability = fields.IntField(null=True)
     uri = fields.CharField(null=True, max_length=255)
-    url = fields.CharField(null=True, max_length=255)
-    created_at = fields.DatetimeField(null=True, auto_now_add=True)
+    acousticness = fields.FloatField(null=True)
+    danceability = fields.FloatField(null=True)
+    energy = fields.FloatField(null=True)
+    instrumentalness = fields.FloatField(null=True)
+    liveness = fields.FloatField(null=True)
+    loudness = fields.FloatField(null=True)
+    speechiness = fields.FloatField(null=True)
+    tempo = fields.FloatField(null=True)
+    valence = fields.FloatField(null=True)
+    popularity = fields.IntField(null=True)
+    artist = fields.CharField(null=True, max_length=255)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 
 SongPydantic = pydantic_model_creator(Song, name="Song")

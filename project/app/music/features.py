@@ -118,9 +118,4 @@ class Features:
         df = pd.DataFrame.from_dict(dic_df)
         df['artist'] = self.name
 
-        # db = 'artist.sqlite'
-        # conn = sqlite3.connect(db)
-
-        # df.to_csv(f'{self.name}_artist_features.csv')
-        # df.to_sql('Features', con=conn, if_exists='append', index=False)
         return df.to_dict(orient='records')
