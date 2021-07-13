@@ -1,20 +1,15 @@
-
 import time
 import spotipy
-import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
-from pprint import pprint as pp
 import numpy as np
 import pandas as pd
 import sqlite3
 from dotenv import load_dotenv
 
-
 """
 The code in this module is experimental, as is the sqlite database
 in the same directory
 """
-
 
 load_dotenv()
 client = "CLIENT"
@@ -106,13 +101,12 @@ start_time = time.time()
 request_count = 0
 for i in spotify_albums:
     audio_features(i)
-    request_count+=1
+    request_count += 1
     if request_count % 5 == 0:
         print(str(request_count) + " playlists completed")
         time.sleep(np.random.uniform(sleep_min, sleep_max))
         print('Loop #: {request_count}')
         print('Elapsed Time: {} seconds'.format(time.time() - start_time))
-
 
 dic_df = {'album': [], 'track_number': [], 'id': [], 'name': [], 'uri': [], 'acousticness': [], 'danceability': [],
           'energy': [], 'instrumentalness': [], 'liveness': [], 'loudness': [], 'speechiness': [], 'tempo': [],
@@ -129,4 +123,3 @@ conn = sqlite3.connect(db)
 
 df.to_csv(f'{name}_artist_features.csv')
 df.to_sql('Features', con=conn, if_exists='append', index=False)
-
