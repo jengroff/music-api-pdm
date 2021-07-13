@@ -20,7 +20,8 @@ def create_application() -> FastAPI:
         title="Everyton / Spring Music API",
         description="This API "
                     "is for creating, storing, and retrieving playlists, "
-                    "songs, and artists in a PostgresQL database.",
+                    "songs, and artists in a PostgresQL database. How boring is "
+                    "this description?",
         version="1.0.0",
     )
     application.include_router(ping.router, tags=["Application"])

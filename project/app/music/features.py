@@ -1,14 +1,10 @@
 import os
 import time
-from collections import namedtuple
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import numpy as np
 import pandas as pd
-import sqlite3
-import json
 from dotenv import load_dotenv
-from pprint import pprint as pp
 
 
 load_dotenv()
