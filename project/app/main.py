@@ -19,7 +19,7 @@ def create_application() -> FastAPI:
     application = FastAPI(
         title="Everyton / Spring Music API",
         description="This API "
-                    "is used for creating, storing, and retrieving playlists, "
+                    "is for creating, storing, and retrieving playlists, "
                     "songs, and artists in a PostgresQL database.",
         version="1.0.0",
     )
@@ -41,7 +41,7 @@ async def startup_event():
     log.info("Starting up...")
     await init_db(app)
 
-#tear down
+# tear down
 @app.on_event("shutdown")
 async def shutdown_event():
     log.info("Shutting down...")
