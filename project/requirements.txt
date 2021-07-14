@@ -17,3 +17,5 @@ pyJWT==2.0.0
 python-multipart==0.0.5
 pandas
 numpy
+pymongo
+dnspython

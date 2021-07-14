@@ -5,12 +5,12 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
-
+import pymongo
+from pymongo import MongoClient
 
 load_dotenv()
-client = os.getenv("CLIENT")
+client_key = os.getenv("CLIENT")
 secret = os.getenv("SECRET")
-database_url = os.getenv("DATABASE_URL")
 
 
 class SongNotFoundException(Exception):
@@ -18,12 +18,18 @@ class SongNotFoundException(Exception):
 
 
 class Features:
+    """
+    This class is really about encapsulating methods that pull down all song data for
+    all songs of a specified artist. It is not optimized for performance (no async),
+    nor does it have  have queueing, which it needs since, depending on the artist,
+    the query can take a long time to complete.
+    """
     def __init__(self, name):
         self.sp = self._spotify_auth()
         self.name = name
 
     def _spotify_auth(self):
-        creds = SpotifyClientCredentials(client_id=client, client_secret=secret)
+        creds = SpotifyClientCredentials(client_id=client_key, client_secret=secret)
         return spotipy.Spotify(client_credentials_manager=creds)
 
     def get_song_features(self):
@@ -103,9 +109,10 @@ class Features:
                 print('Loop #: {request_count}')
                 print('Elapsed Time: {} seconds'.format(time.time() - start_time))
 
-        dic_df = {'album': [], 'track_number': [], 'id': [], 'name': [], 'uri': [], 'acousticness': [], 'danceability': [],
-                          'energy': [], 'instrumentalness': [], 'liveness': [], 'loudness': [], 'speechiness': [], 'tempo': [],
-                          'valence': [], 'popularity': []}
+        dic_df = {'album': [], 'track_number': [], 'id': [], 'name': [], 'uri': [], 'acousticness': [],
+                  'danceability': [],
+                  'energy': [], 'instrumentalness': [], 'liveness': [], 'loudness': [], 'speechiness': [], 'tempo': [],
+                  'valence': [], 'popularity': []}
 
         for album in spotify_albums:
             for feature in spotify_albums[album]:
