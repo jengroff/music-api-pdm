@@ -1,6 +1,8 @@
 # Music API
 
-API for managing music playlists and related assets; makes use of Spotify API but does not require it.
+API for managing music playlists and related assets. 
+To make use of the Spotify endpoints (and related classes & methods) you need to supply your own `SPOTIFY_CLIENT_ID` and `SPOTIFY_SECRET`. 
+You can obtain them here if you're not already registered as a Spotify developer:  https://developer.spotify.com/
 
 ## Features 
 
@@ -16,6 +18,7 @@ API for managing music playlists and related assets; makes use of Spotify API bu
 - Docker, GitHub Actions, and Heroku
 - Pytest fixtures and tests
 - Black code formatting
+- The included `env.sample` shows the environment variables you need to set  
 
 # Run the app ->
 

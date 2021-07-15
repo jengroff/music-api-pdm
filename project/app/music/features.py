@@ -5,12 +5,11 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
-import pymongo
-from pymongo import MongoClient
+
 
 load_dotenv()
-client_key = os.getenv("CLIENT")
-secret = os.getenv("SECRET")
+client_key = os.getenv("SPOTIFY_CLIENT_ID")
+secret = os.getenv("SPOTIFY_SECRET")
 
 
 class SongNotFoundException(Exception):
