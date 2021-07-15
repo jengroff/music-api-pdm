@@ -1,5 +1,5 @@
 spotipy~=2.18.0
-fastapi==0.63.0
+fastapi==0.66.0
 requests==2.25.1
 asyncpg==0.22.0
 uvicorn==0.13.4
