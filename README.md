@@ -52,3 +52,8 @@ docker-compose exec web-db psql -U postgres
 ```
 cd project && uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
 ```
+## API Documentation
+
+#### This is what your documentation should look like in Swagger / OpenAPI:
+
+<img width="654" alt="screengrab 2021-07-19 at 3 28 31 PM" src="https://user-images.githubusercontent.com/30704684/126216181-cd06758f-6aba-438c-827b-fbb2adf2b2fc.png">
