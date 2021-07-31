@@ -1,4 +1,4 @@
-# High-Performance Consumer Music API
+# High-Performance Music API
 
 #### _Fully-documented REST API for extracting, transforming, and storing playlists, artists, songs, and related metadata._
 ---
