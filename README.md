@@ -1,4 +1,6 @@
-# Asynchronous REST API for Consumer Music Service
+# High-Performance Consumer Music API
+
+### _Fully-documented REST API for extracting, transforming, and storing playlists, artists, songs, and related metadata.
 
 API for managing music playlists and related assets. 
 To make use of the Spotify endpoints (and related classes & methods) you need to supply your own `SPOTIFY_CLIENT_ID` and `SPOTIFY_SECRET`. 
