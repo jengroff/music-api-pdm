@@ -8,7 +8,7 @@ from app.db import init_db
 """
 The create_application() function loads each of the endpoint "groups"
 (playlists, artists, songs, spotify) as separate routers, each in their
-own module inside the "api" directory.
+own module inside the app.api directory.
 """
 
 log = logging.getLogger("uvicorn")
@@ -17,11 +17,9 @@ log = logging.getLogger("uvicorn")
 # mount the routes here
 def create_application() -> FastAPI:
     application = FastAPI(
-        title="Everyton / Spring Music API",
-        description="This API "
-                    "is for creating, storing, and retrieving playlists, "
-                    "songs, and artists in a PostgresQL database. How boring is "
-                    "this description?",
+        title="Spring Music API",
+        description="REST API for extracting, transforming, and storing playlists, artists, songs, and related "
+                    "metadata.",
         version="1.0.0",
     )
     application.include_router(ping.router, tags=["Application"])

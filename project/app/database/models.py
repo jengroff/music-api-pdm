@@ -43,6 +43,29 @@ SongPydantic = pydantic_model_creator(Song, name="Song")
 SongInPydantic = pydantic_model_creator(Song, name="SongIn", exclude_readonly=True)
 
 
+# class SongFeature:
+#     id = fields.IntField(pk=True, auto_now_add=True)
+#     spid = fields.CharField(max_length=255)
+#     name = fields.CharField(max_length=255)
+#     artist = fields.CharField(null=True, max_length=255)
+#     uri = fields.CharField(null=True, max_length=255)
+#     tempo = fields.IntField(null=True)
+#     energy = fields.IntField(null=True)
+#     danceability = fields.IntField(null=True)
+#     acousticness = fields.IntField(null=True)
+#     instrumentalness = fields.IntField(null=True)
+#     liveness = fields.IntField(null=True)
+#     loudness = fields.IntField(null=True)
+#     speechiness = fields.IntField(null=True)
+#     valence = fields.IntField(null=True)
+#     created_at = fields.DatetimeField(null=True, auto_now_add=True)
+#
+#
+# SongFeaturePydantic = pydantic_model_creator(SongFeature, name="SongFeature")
+# SongFeatureInPydantic = pydantic_model_creator(SongFeature, name="SongFeatureIn", exclude_readonly=True)
+
+
+
 class StrArrayField(Field, list):
     SQL_TYPE = "text[]"
 

@@ -5,7 +5,6 @@ from fastapi import APIRouter, HTTPException, Path, Depends
 from app.database.models import Song, SongPydantic, SongInPydantic, Status
 from app.api.auth import get_current_user
 
-
 router = APIRouter()
 
 
@@ -20,6 +19,13 @@ async def create_song(song: SongInPydantic):
     return await SongPydantic.from_tortoise_orm(song_obj)
 
 
+# @router.post("/songs/features", response_model=SongFeaturePydantic, status_code=201, summary="Create a new song with "
+#                                                                                              "features")
+# async def create_song_with_features(songfeature: SongFeatureInPydantic):
+#     song_feat_obj = await SongFeature.create(**songfeature.dict(exclude_unset=True))
+#     return await SongFeaturePydantic.from_tortoise_orm(song_feat_obj)
+
+
 @router.get("/songs/{id}", response_model=SongPydantic, status_code=200, summary="Get a specific song by id")
 async def get_song(id: int = Path(..., gt=0)):
     song = await SongPydantic.from_queryset_single(Song.get(id=id))
@@ -31,8 +37,8 @@ async def get_song(id: int = Path(..., gt=0)):
 
 @router.put("/songs/{id}", response_model=SongPydantic, status_code=200, summary="Update a specific song by id")
 async def update_song(
-    song: SongInPydantic,
-    id: int = Path(..., gt=0)):
+        song: SongInPydantic,
+        id: int = Path(..., gt=0)):
     await Song.filter(id=id).update(**song.dict(exclude_unset=True))
     song = await SongPydantic.from_queryset_single(Song.get(id=id))
     if not song:
@@ -43,7 +49,7 @@ async def update_song(
 
 @router.delete("/songs/{id}", response_model=Status, status_code=200, summary="Delete a specific song by id")
 async def delete_song(
-    id: int = Path(..., gt=0),
+        id: int = Path(..., gt=0),
 ):
     deleted_count = await Song.filter(id=id).delete()
     if not deleted_count:
