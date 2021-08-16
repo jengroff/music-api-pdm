@@ -15,8 +15,18 @@ client = os.getenv("SPOTIFY_CLIENT_ID")
 secret = os.getenv("SPOTIFY_SECRET")
 
 MARKET, LIMIT = "US", 1
-Track = namedtuple("Track", ("id name artist uri acousticness danceability energy instrumentalness liveness loudness speechiness tempo valence"))
-Features = namedtuple("Features", ("acousticness danceability energy instrumentalness liveness loudness speechiness tempo valence"))
+Track = namedtuple(
+    "Track",
+    (
+        "id name artist uri acousticness danceability energy instrumentalness liveness loudness speechiness tempo valence"
+    ),
+)
+Features = namedtuple(
+    "Features",
+    (
+        "acousticness danceability energy instrumentalness liveness loudness speechiness tempo valence"
+    ),
+)
 
 
 class TrackNotFoundException(Exception):
@@ -53,7 +63,7 @@ class SongFeatures:
             loudness,
             speechiness,
             tempo,
-            valence
+            valence,
         )
 
     def get_song(self, artist, name):
@@ -81,5 +91,5 @@ class SongFeatures:
             features.loudness,
             features.speechiness,
             features.tempo,
-            features.valence
+            features.valence,
         )

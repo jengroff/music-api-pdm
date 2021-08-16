@@ -42,8 +42,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return await UserPydantic.from_tortoise_orm(user)
 
 
-@router.post("/users", response_model=UserPydantic, status_code=201, summary="Create a new user (using email & "
-                                                                             "password)")
+@router.post(
+    "/users",
+    response_model=UserPydantic,
+    status_code=201,
+    summary="Create a new user (using email & " "password)",
+)
 async def create_user(user: UserInPydantic):
     user_obj = User(
         username=user.username, password_hash=bcrypt.hash(user.password_hash)
@@ -67,12 +71,21 @@ async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": token, "token_type": "bearer"}
 
 
-@router.get("/users", response_model=List[UserPydantic], summary="Get list of all users in the database")
+@router.get(
+    "/users",
+    response_model=List[UserPydantic],
+    summary="Get list of all users in the database",
+)
 async def get_users():
     return await UserPydantic.from_queryset(User.all())
 
 
-@router.delete("/users/{id}", response_model=Status, status_code=200, summary="Delete specific user by User ID")
+@router.delete(
+    "/users/{id}",
+    response_model=Status,
+    status_code=200,
+    summary="Delete specific user by User ID",
+)
 async def delete_user(
     id: int = Path(..., gt=0),
 ):
@@ -80,4 +93,3 @@ async def delete_user(
     if not deleted_count:
         raise HTTPException(status_code=404, detail=f"User not found")
     return Status(message=f"Deleted user {id}")
-

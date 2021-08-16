@@ -18,7 +18,6 @@ def test_create_playlist(test_app_with_db):
 #     # assert response.json()["name"] == "the name"
 
 
-
 def test_create_playlists_invalid_json(test_app):
     response = test_app.post("/playlists", data=json.dumps({}))
     assert response.status_code == 422

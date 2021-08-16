@@ -20,5 +20,3 @@ def get_song_data(artist: str, name: str):
     json_compatible_item_data = jsonable_encoder(song)
     return JSONResponse(content=json_compatible_item_data)
     # adding comment
-
-

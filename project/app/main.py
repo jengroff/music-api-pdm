@@ -19,7 +19,7 @@ def create_application() -> FastAPI:
     application = FastAPI(
         title="Spring Music API",
         description="REST API for extracting, transforming, and storing playlists, artists, songs, and related "
-                    "metadata.",
+        "metadata.",
         version="1.0.0",
     )
     application.include_router(ping.router, tags=["Application"])
@@ -39,6 +39,7 @@ app = create_application()
 async def startup_event():
     log.info("Starting up...")
     await init_db(app)
+
 
 # tear down
 @app.on_event("shutdown")

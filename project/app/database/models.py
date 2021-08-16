@@ -23,7 +23,9 @@ class Artist(Model):
 
 
 ArtistPydantic = pydantic_model_creator(Artist, name="Artist")
-ArtistInPydantic = pydantic_model_creator(Artist, name="ArtistIn", exclude_readonly=True)
+ArtistInPydantic = pydantic_model_creator(
+    Artist, name="ArtistIn", exclude_readonly=True
+)
 
 
 class Song(Model):
@@ -69,7 +71,7 @@ class StrArrayField(Field, list):
 class Playlist(Model):
     id = fields.IntField(pk=True, auto_now_add=True)
     name = fields.CharField(max_length=255)
-    songs = fields.ManyToManyField('models.Song', related_name='songs')
+    songs = fields.ManyToManyField("models.Song", related_name="songs")
     spm_min = fields.IntField(null=True)
     spm_max = fields.IntField(null=True)
     spm_avg = fields.IntField(null=True)
@@ -77,10 +79,14 @@ class Playlist(Model):
 
 
 PlaylistPydantic = pydantic_model_creator(Playlist, name="Playlist")
-PlaylistInPydantic = pydantic_model_creator(Playlist, name="PlaylistIn", exclude_readonly=True)
+PlaylistInPydantic = pydantic_model_creator(
+    Playlist, name="PlaylistIn", exclude_readonly=True
+)
+
 
 class PlaylistNamePatch(BaseModel):
     name: str
+
 
 class PlaylistSongPatch(BaseModel):
     songs: List[str]
