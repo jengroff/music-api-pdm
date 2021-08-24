@@ -3,6 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from app.music.track import SongFeatures
+from app.music.features import Features
 from app.music.spotify import Spotify
 
 
