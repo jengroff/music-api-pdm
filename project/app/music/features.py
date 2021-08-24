@@ -5,11 +5,19 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
+from pymongo import MongoClient
+import certifi
 
 
 load_dotenv()
 client_key = os.getenv("SPOTIFY_CLIENT_ID")
 secret = os.getenv("SPOTIFY_SECRET")
+
+uri = "mongodb+srv://josh-admin:Josh740808@response-analyzer.nfnt0.mongodb.net"
+client = MongoClient(uri, connectTimeoutMS=200, retryWrites=True, ssl_ca_certs=certifi.where())
+
+db = client.music_library
+songs = db.songs
 
 
 class SongNotFoundException(Exception):
@@ -146,4 +154,6 @@ class Features:
         df = pd.DataFrame.from_dict(dic_df)
         df["artist"] = self.name
 
-        return df.to_dict(orient="records")
+        records = df.to_dict(orient="records")
+
+        return records
