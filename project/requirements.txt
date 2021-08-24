@@ -19,3 +19,4 @@ pandas
 numpy
 pymongo
 dnspython
+certifi
