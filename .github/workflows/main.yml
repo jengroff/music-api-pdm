@@ -62,8 +62,6 @@ jobs:
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
             -p 5003:8765 \
             ${{ env.IMAGE }}:latest
-      - name: Pytest
-        run: docker exec music-api-pdm python -m pytest .
       - name: Black
         run: docker exec music-api-pdm python -m black .
 
