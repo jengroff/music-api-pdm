@@ -11,8 +11,17 @@ log = logging.getLogger("uvicorn")
 load_dotenv()
 database_url = "DATABASE_URL"
 
-# called by FastAPI on startup, from 'main'
-# 'generate_schemas' is False to avoid recreating schema whenever app restarts
+TORTOISE_ORM = {
+    "connections": {"default": os.environ.get("DATABASE_URL")},
+    "apps": {
+        "models": {
+            "models": ["app.database.models", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+}
+
+
 async def init_db(app: FastAPI) -> None:
     register_tortoise(
         app,
@@ -23,7 +32,6 @@ async def init_db(app: FastAPI) -> None:
     )
 
 
-# called through CLI -> 'docker-compose exec web python app/db.py'
 async def generate_schema() -> None:
     log.info("Initializing Tortoise...")
 

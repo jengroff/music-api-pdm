@@ -20,3 +20,4 @@ numpy
 pymongo
 dnspython
 certifi
+aerich

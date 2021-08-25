@@ -34,14 +34,12 @@ def create_application() -> FastAPI:
 
 app = create_application()
 
-# setup
 @app.on_event("startup")
 async def startup_event():
     log.info("Starting up...")
     await init_db(app)
 
 
-# tear down
 @app.on_event("shutdown")
 async def shutdown_event():
     log.info("Shutting down...")
