@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from app.music.track import SongFeatures
 from app.music.features import Features
 from app.music.spotify import Spotify
+from app.music.tasks import add
 from pymongo import MongoClient
 import certifi
 
@@ -81,3 +82,12 @@ def bulk_insert(artist: str):
     songs = db.songs
     songs.insert_many(get_artist_songs(artist))
     return {"total records": songs.count_documents({})}
+
+
+@router.get(
+    "/bob",
+    status_code=200,
+    summary="call celery"
+)
+async def celi():
+    add.delay(5, 3)
