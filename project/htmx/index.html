@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Download music</title>
+  <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+  <script src="https://unpkg.com/htmx.org@1.5.0/dist/ext/client-side-templates.js"></script>
+  <script src="https://unpkg.com/mustache@latest"></script>
+</head>
+<body>
+  <div hx-ext="client-side-templates">
+    <input type="text" name="artist"
+      hx-get="http://127.0.0.1:8000/spotify/artist/all"
+      hx-target="#artistDiv"
+      hx-swap="innerHTML"
+      from="#submit"
+      placeholder="Enter artist ..."
+      mustache-template="task">
+    <button id="submit">Submit</button>
+
+    <div id="artistDiv"></div>
+    <div id="statusDiv"></div>
+    <div id="songsDiv"></div>
+
+    <template id="task">
+      <p>Task id: {{ task_id }}</p>
+      <button hx-get="http://127.0.0.1:8000/spotify/artist/all/download/status?task_id={{ task_id }}"
+        hx-target="#statusDiv"
+        mustache-template="status">Status</button>
+    </template>
+
+    <template id="status">
+      <div>
+        {{#ready}}
+          <p style="color: green; font-weight: bold;">Ready!</p>
+          <button hx-get="http://127.0.0.1:8000/spotify/artist/all?artist={{ task_id }}"
+            hx-target="#songsDiv"
+            mustache-template="songs">Show songs</button>
+        {{/ready}}
+        {{^ready}}
+          <p>Still downloading data ...</p>
+        {{/ready}}
+      </div>
+    </template>
+
+    <template id="songs">
+      <pre>
+        {{ data }}
+      </pre>
+    </template>
+
+  </div>
+</body>
+</html>
