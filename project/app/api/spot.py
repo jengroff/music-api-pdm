@@ -84,7 +84,9 @@ def get_artist_songs(artist: str):
     songs = retrieve_song_features(artist)
 
     if songs.count() > 0:
-        return [_serialize(song) for song in songs]
+        return {
+            "data": [_serialize(song) for song in songs]
+        }
 
     job = retrieve_and_cache_song_features.delay(artist)
     return {"task_id": job.task_id}
@@ -100,4 +102,7 @@ def get_task_status(task_id: str):
        features download is still in progress.
     """
     result = celery_app.AsyncResult(task_id)
-    return {"status": result.status}
+    return {
+        "task_id": task_id,
+        "ready": result.status.lower() == "success"
+    }

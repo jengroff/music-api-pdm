@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import playlists, songs, artists, spot, ping, auth
 from app.db import init_db
@@ -22,6 +23,15 @@ def create_application() -> FastAPI:
         "metadata.",
         version="1.0.0",
     )
+
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     application.include_router(ping.router, tags=["Application"])
     application.include_router(playlists.router, tags=["Playlists"])
     application.include_router(songs.router, tags=["Songs"])
