@@ -1,27 +1,22 @@
-import os
+from bson.objectid import ObjectId
 from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from dotenv import load_dotenv
 
 from app.music.track import SongFeatures
-from app.music.features import Features
 from app.music.spotify import Spotify
-from app.music.tasks import add
-from pymongo import MongoClient
-import certifi
+from app.music.tasks import (
+    retrieve_and_cache_song_features,
+    app as celery_app)
+from app.mongo_db import retrieve_song_features
 
 router = APIRouter()
-load_dotenv()
-
-MONGO_URI = os.getenv("MONGO_URI")
-MONGO_DATABASE = os.getenv("MONGO_DATABASE")
-MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")
 
 
 @router.get(
     "/spotify/song",
-    summary="Fetch song data from Spotify (using artist and song name as parameters)",
+    summary=("Fetch song data from Spotify "
+             "(using artist and song name as parameters)"),
     description=(
             "Takes both Artist and Song name in query parameter "
             "and returns Spotify song data as a dictionary"
@@ -63,31 +58,49 @@ def get_track_features(artist: str, name: str):
     return JSONResponse(content=json_compatible_item_data)
 
 
+def _serialize(song):
+    """Rip out the _id: ObjectId (k, v) pair because
+       it's not serializable
+    """
+    return {k: v for k, v in song.items()
+            if not isinstance(v, ObjectId)}
+
+
 @router.get(
     "/spotify/artist/all",
-    summary="Returns acoustic features for every song of a given artist. USE WITH CARE.",
-    description=(("Takes Artist name as a query parameter")),
+    summary="Returns acoustic features for every song of a given artist..",
+    description="Takes Artist name as a query parameter"
 )
 def get_artist_songs(artist: str):
-    sf = Features(artist)
-    artist_songs = sf.get_song_features()
-    return artist_songs
+    """If songs are already in DB, retrieve them,
+       otherwise start the retrieval / caching
+       asynchronously.
+    """
+    artist = artist.lower()
 
+    # TODO: how to prevent we kick off two download tasks?
+    # so far we just check the DB for songs from artist
+    # as a criteria of "job done"
+    songs = retrieve_song_features(artist)
 
-@router.get("/spotify/artist/all/insert")
-def bulk_insert(artist: str):
-    uri = MONGO_URI
-    client = MongoClient(uri, connectTimeoutMS=200, retryWrites=True, ssl_ca_certs=certifi.where())
-    db = client.music_library
-    songs = db.songs
-    songs.insert_many(get_artist_songs(artist))
-    return {"total records": songs.count_documents({})}
+    if songs.count() > 0:
+        return [_serialize(song) for song in songs]
+
+    job = retrieve_and_cache_song_features.delay(artist)
+    msg = ("We initiated a download of all songs of "
+           f"{artist}, call /all/download/status with "
+           f"task_id {job.task_id} to check status")
+    return {"message": msg}
 
 
 @router.get(
-    "/bob",
-    status_code=200,
-    summary="call celery"
+    "/spotify/artist/all/download/status",
+    summary="Returns status of async download",
+    description="Takes task id as a query parameter"
 )
-async def celi():
-    add.delay(5, 3)
+def get_task_status(task_id: str):
+    """This is useful for the front-end to show if the
+       features download is still in progress.
+    """
+    result = celery_app.AsyncResult(task_id)
+    return {"status": result.status}
