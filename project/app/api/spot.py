@@ -87,10 +87,7 @@ def get_artist_songs(artist: str):
         return [_serialize(song) for song in songs]
 
     job = retrieve_and_cache_song_features.delay(artist)
-    msg = ("We initiated a download of all songs of "
-           f"{artist}, call /all/download/status with "
-           f"task_id {job.task_id} to check status")
-    return {"message": msg}
+    return {"task_id": job.task_id}
 
 
 @router.get(
