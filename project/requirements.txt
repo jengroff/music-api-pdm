@@ -15,6 +15,7 @@ passlib==1.7.4
 bcrypt==3.2.0
 pyJWT==2.0.0
 python-multipart==0.0.5
+celery==5.1.2
 pandas
 numpy
 pymongo
