@@ -5,7 +5,6 @@ def test_create_playlist(test_app_with_db):
     response = test_app_with_db.post(
         "/playlists", data=json.dumps({"name": "the name"})
     )
-
     assert response.status_code == 201
     assert response.json()["name"] == "the name"
 
@@ -70,7 +69,7 @@ def test_read_all_playlists(test_app_with_db):
     )
     playlist_id = response.json()["id"]
 
-    response = test_app_with_db.get(f"/playlists/")
+    response = test_app_with_db.get(f"/playlists")
     assert response.status_code == 200
 
     response_list = response.json()
