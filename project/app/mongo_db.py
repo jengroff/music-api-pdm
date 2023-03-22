@@ -17,6 +17,7 @@ ArtistSongs = list[Song]
 
 
 def bulk_insert_songs(song_features: ArtistSongs) -> int:
+    """Inserts a list of song features into the songs collection"""
     songs.insert_many(song_features)
     return songs.count_documents({})
 
